@@ -1,8 +1,8 @@
-func1_UI <- function(id) {
+func1_ui <- function(id) {
   textOutput(NS(id, "feedback"))
 }
 
-func1_Server <- function(id, month) {
+func1_server <- function(id, month) {
   stopifnot(is.reactive(month))
 
   moduleServer(id, function(input, output, session) {
