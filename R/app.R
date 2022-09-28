@@ -11,11 +11,15 @@ AegisApp <- function(...) {
   ui <- navbarPage(
     title = "AegisApp",
     tabPanel(
-      title = "Feedback",
-      func1_ui("tab1")
+      title = "Func_input",
+      selectInput("month", "What's your favourite month?", choices = months)
     ),
     tabPanel(
-      title = "Get cohort",
+      title = "Func_feedback",
+      func_ui("feed")
+    ),
+    tabPanel(
+      title = "Inputs",
       selectInput("month", "What's your favourite month?", choices = months),
       textInput("name", "What's your name?", ""),
       passwordInput("password", "What's your password?"),
@@ -43,19 +47,47 @@ AegisApp <- function(...) {
       actionButton("drink", "Drink me!", icon = icon("cocktail"))
     ),
     tabPanel(
-      title = "Disease Map",
-      plot_ui("plot_map")
+      title = "Text",
+      text_ui("text")
     ),
     tabPanel(
-      title = "Disease Cluster",
-      plot_ui("plot_cluster")
+      title = "Table",
+      table_ui("table")
+    ),
+    tabPanel(
+      title = "Plot",
+      plot_ui("plot")
+    ),
+    tabPanel(
+      title = "Text Print",
+      textprint_ui
+    # ),
+    # tabPanel(
+    #   title = "Get cohort",
+    #   cohort_menu,
+    #   parameter_tabs
+    # ),
+    # tabPanel(
+    #   title = "Disease Map",
+    #   plot_ui("plot_map")
+    # ),
+    # tabPanel(
+    #   title = "Disease Cluster",
+    #   plot_ui("plot_cluster")
     )
   )
 
   server <- function(input, output, session) {
-    func1_server("tab1", reactive(input$month))
-    plot_server("plot_map")
-    plot_server("plot_cluster")
+    func_server("feed", reactive(input$month))
+
+    text_server("text")
+    table_server("table")
+    plot_server("plot")
+
+    textprint_server(input, output, session)
+
+    # plot_server("plot_map")
+    # plot_server("plot_cluster")
   }
 
   shinyApp(ui, server, ...)
