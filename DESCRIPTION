@@ -1,10 +1,16 @@
 Package: AegisApp
-Title: What the Package Does (One Line, Title Case)
+Title: AegisApp
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+  c(
+    person("Sungjae", "Jung", , "sungjae.2425@gmail.com", role = c("aut"),
+           comment = c(ORCID = "0000-0001-8266-0480")),
+    person("Jaehyeong", "Cho", , "boyinai03@gmail.com ", role = c("aut"),
+           comment = c(ORCID = "0000-0001-7213-5033")),
+    person("Seng Chan", "You", , "applegna@gmail.com", role = c("cre", "cph"),
+           comment = c(ORCID = "0000-0002-5052-6399"))
+  )
+Description: AegisApp is a shiny app for AegisFunc that is a tool for Spatio-temporal epidemiology based on OHDSI CDM.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
