@@ -59,6 +59,10 @@ AegisApp <- function(...) {
     # ),
 
     tabPanel(
+      title = "Set database",
+      database_ui
+    ),
+    tabPanel(
       title = "Get cohort",
       cohort_ui
     ),
@@ -79,6 +83,7 @@ AegisApp <- function(...) {
     # func_server("feed", reactive(input$month))
     # textprint_server(input, output, session)
 
+    database_server(input, output, session)
     cohort_server(input, output, session)
     disease_map_server(input, output, session)
     disease_cluster_server(input, output, session)

@@ -1,38 +1,50 @@
-months <- c(
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+cohort_tab <- tabsetPanel(
+  id = "cohort_tab",
+  type = "tabs",
+
+  tabPanel(
+    title = "Define cohort",
+
+    selectInput("target_cohort_definition_id", "Target cohort definition id", c(1:10)),
+    selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", c(1:10)),
+    dateInput("cohort_start_date", "Cohort start date", "2020-01-01"),
+    dateInput("cohort_end_date", "Cohort end date", "2020-12-31"),
+    textInput("time_at_risk_start_date", "Time at risk start date", "0"),
+    textInput("time_at_risk_end_date", "Time at risk end date", "0"),
+    radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", c("cohort_start_date", "cohort_end_date")),
+
+    actionButton("save_cohort_info", "Save!"),
+    actionButton("init_cohort_info", "Initialize")
+  ),
+  tabPanel(
+    title = "Select geo data",
+
+    selectInput("name", "Source of the geo data", c("GADM", "KOR")),
+    selectInput("country", "Country", c("KOR")),
+    radioButtons("level", "Level of the administrative data", c(2:3)),
+
+    actionButton("save_geo_info", "Save!"),
+    actionButton("init_geo_info", "Initialize")
+  ),
+  tabPanel(
+    title = "Set adjustment",
+
+    selectInput("mode", "Adjustment mode", c("Std", "Crd")),
+    selectInput("fraction", "Fraction", c("100000")),
+    selectInput("conf_level", "Confidence level", c("0.95")),
+
+    actionButton("save_adj_info", "Save!"),
+    actionButton("init_adj_info", "Initialize")
+  ),
+  tabPanel(
+    title = "Get cohort table",
+
+    actionButton("get_cohort", "Get cohort table"),
+  )
 )
-animals <- c("dog", "cat", "mouse", "bird", "other", "I hate animals")
 
 cohort_ui <- fluidPage(
-  textInput("text_cohort", "What's your name?", ""),
-  textOutput("text_cohort"),
-  # Inputs
-  selectInput("select1", "What's your favourite month?", choices = months),
-  selectInput("select2", "What's your favourite state?", state.name),
-  selectInput("select3", "What's your favourite state?", state.name, multiple = TRUE),
-  textInput("text1", "What's your name?", ""),
-  passwordInput("password1", "What's your password?"),
-  textAreaInput("textArea1", "Tell me about yourself", rows = 3),
-  numericInput("numeric1", "Number one", value = 0, min = 0, max = 100),
-  sliderInput("slider1", "Number two", value = 50, min = 0, max = 100),
-  sliderInput("slider2", "Range", value = c(10, 20), min = 0, max = 100),
-  dateInput("date1", "When were you born?"),
-  dateRangeInput("dateRange1", "When do you want to go on vacation next?"),
-  radioButtons("radio1", "What's your favourite animal?", animals),
-  radioButtons("radio2", "Choose one:",
-               choiceNames = list(
-                 icon("angry"),
-                 icon("smile"),
-                 icon("sad-tear")
-               ),
-               choiceValues = list("angry", "happy", "sad")
-  ),
-  checkboxGroupInput("checkboxGroup1", "What animals do you like?", animals),
-  checkboxInput("checkbox1", "Clean up?", value = TRUE),
-  checkboxInput("checkbox2", "Shutdown?"),
-  actionButton("action1", "Click me!"),
-  actionButton("action2", "Drink me!", icon = icon("cocktail"))
+  cohort_tab
 )
 
 cohort_server <- function(input, output, session) {
@@ -40,19 +52,3 @@ cohort_server <- function(input, output, session) {
     input$text_cohort
   })
 }
-
-# parameter_tabs <- tabsetPanel(
-#   id = "params",
-#   type = "hidden",
-#   tabPanel("normal",
-#            numericInput("mean", "mean", value = 1),
-#            numericInput("sd", "standard deviation", min = 0, value = 1)
-#   ),
-#   tabPanel("uniform",
-#            numericInput("min", "min", value = 0),
-#            numericInput("max", "max", value = 1)
-#   ),
-#   tabPanel("exponential",
-#            numericInput("rate", "rate", value = 1, min = 0),
-#   )
-# )
