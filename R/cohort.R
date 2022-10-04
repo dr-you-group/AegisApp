@@ -13,8 +13,7 @@ cohort_tab <- tabsetPanel(
     textInput("time_at_risk_end_date", "Time at risk end date", "0"),
     radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", c("cohort_start_date", "cohort_end_date")),
 
-    actionButton("save_cohort_info", "Save!"),
-    actionButton("init_cohort_info", "Initialize")
+    actionButton("print_cohort", "Print"),
   ),
   tabPanel(
     title = "Select geo data",
@@ -23,8 +22,7 @@ cohort_tab <- tabsetPanel(
     selectInput("country", "Country", c("KOR")),
     radioButtons("level", "Level of the administrative data", c(2:3)),
 
-    actionButton("save_geo_info", "Save!"),
-    actionButton("init_geo_info", "Initialize")
+    actionButton("print_geo", "Print"),
   ),
   tabPanel(
     title = "Set adjustment",
@@ -33,13 +31,14 @@ cohort_tab <- tabsetPanel(
     selectInput("fraction", "Fraction", c("100000")),
     selectInput("conf_level", "Confidence level", c("0.95")),
 
-    actionButton("save_adj_info", "Save!"),
-    actionButton("init_adj_info", "Initialize")
+    actionButton("print_adj", "Print"),
   ),
   tabPanel(
     title = "Get cohort table",
 
     actionButton("get_cohort", "Get cohort table"),
+
+    dataTableOutput("cohort")
   )
 )
 
@@ -51,6 +50,50 @@ cohort_server <- function(input, output, session) {
   output$text_cohort <- renderText({
     input$text_cohort
   })
+
+  observeEvent(input$print_cohort, {
+    params <- list()
+    params$target_cohort_definition_id <- input$target_cohort_definition_id
+    params$outcome_cohort_definition_id <- input$outcome_cohort_definition_id
+    params$cohort_start_date <- input$cohort_start_date
+    params$cohort_end_date <- input$cohort_end_date
+    params$time_at_risk_start_date <- input$time_at_risk_start_date
+    params$time_at_risk_end_date <- input$time_at_risk_end_date
+    params$time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
+
+    message("cohort_params: ", toString(params))
+
+  })
+
+  observeEvent(input$print_geo, {
+    params <- list()
+    params$name <- input$name
+    params$country <- input$country
+    params$level <- input$level
+
+    message("geo_params: ", toString(params))
+
+  })
+
+  observeEvent(input$print_adj, {
+    params <- list()
+    params$mode <- input$mode
+    params$fraction <- input$fraction
+    params$conf_level <- input$conf_level
+
+    message("adj_params: ", toString(params))
+
+  })
+
+  cohort <- eventReactive(input$get_cohort, {
+    mtcars
+  })
+
+  output$cohort <- renderDataTable(
+    cohort(),
+    options = list(pageLength = 5)
+  )
+
 
   # render.table <- eventReactive(input$submit_table, {})
   # observeEvent(input$submit_plot, {})

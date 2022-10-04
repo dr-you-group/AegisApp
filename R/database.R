@@ -13,11 +13,10 @@ database_ui <- fluidPage(
   textInput("cdm_database_schema", "CDM Database schema", database_params_init$cdm_database_schema),
   textInput("result_database_schema", "Results Database schema", database_params_init$result_database_schema),
 
-  actionButton("save_db_info", "Save!"),
+  actionButton("print_db", "Print"),
   actionButton("get_cohort_list", "Get cohort list"),
-  actionButton("show_db_info", "Show"),
 
-  textOutput("conn_info")
+  dataTableOutput("cohort_list")
 )
 
 database_server <- function(input, output, session) {
@@ -53,7 +52,7 @@ database_server <- function(input, output, session) {
   #   params
   # })
 
-  observeEvent(input$show_db_info, {
+  observeEvent(input$print_db, {
     params <- list()
     params$dbms <- input$dbms
     params$path_to_driver <- input$path_to_driver
@@ -61,9 +60,18 @@ database_server <- function(input, output, session) {
     params$cdm_database_schema <- input$cdm_database_schema
     params$result_database_schema <- input$result_database_schema
 
-    message("database_params: ", toString(params))
+    message("db_params: ", toString(params))
 
   })
+
+  cohort_list <- eventReactive(input$get_cohort_list, {
+    mtcars
+  })
+
+  output$cohort_list <- renderDataTable(
+    cohort_list(),
+    options = list(pageLength = 5)
+  )
 
   # render.table <- eventReactive(input$submit_table, {})
   # observeEvent(input$submit_plot, {})

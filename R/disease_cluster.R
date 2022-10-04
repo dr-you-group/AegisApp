@@ -1,16 +1,19 @@
 disease_cluster_ui <- fluidPage(
-  textInput("text_disease_cluster", "What's your name?", ""),
-  textOutput("text_disease_cluster"),
-  verbatimTextOutput("code_disease_cluster")
+  actionButton("plot_disease_cluster", "Plot disease cluster"),
+
+  plotOutput("disease_cluster", width = "400px")
 )
 
 disease_cluster_server <- function(input, output, session) {
-  output$text_disease_cluster <- renderText({
-    input$text_disease_cluster
+
+  disease_cluster <- eventReactive(input$plot_disease_cluster, {
+    plot(6:10)
   })
-  output$code_disease_cluster <- renderPrint({
-    summary(1:10)
-  })
+
+  output$disease_cluster <- renderPlot(
+    disease_cluster(),
+    res = 96
+  )
 
   # render.table <- eventReactive(input$submit_table, {})
   # observeEvent(input$submit_plot, {})
