@@ -11,4 +11,8 @@ disease_cluster_server <- function(input, output, session) {
   output$code_disease_cluster <- renderPrint({
     summary(1:10)
   })
+
+  # render.table <- eventReactive(input$submit_table, {})
+  # observeEvent(input$submit_plot, {})
+  # observeEvent(input$submit_cluster, {})
 }

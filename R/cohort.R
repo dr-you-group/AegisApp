@@ -51,4 +51,8 @@ cohort_server <- function(input, output, session) {
   output$text_cohort <- renderText({
     input$text_cohort
   })
+
+  # render.table <- eventReactive(input$submit_table, {})
+  # observeEvent(input$submit_plot, {})
+  # observeEvent(input$submit_cluster, {})
 }
