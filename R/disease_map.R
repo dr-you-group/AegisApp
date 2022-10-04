@@ -5,7 +5,6 @@ disease_map_ui <- fluidPage(
 )
 
 disease_map_server <- function(input, output, session) {
-
   disease_map <- eventReactive(input$plot_disease_map, {
     plot(1:5)
   })
@@ -15,7 +14,9 @@ disease_map_server <- function(input, output, session) {
     res = 96
   )
 
-  # render.table <- eventReactive(input$submit_table, {})
-  # observeEvent(input$submit_plot, {})
-  # observeEvent(input$submit_cluster, {})
+  # table <- eventReactive(input$get_table, {...})
+  # output$table <- renderDataTable(table())
+  # plot <- eventReactive(input$get_plot, {...})
+  # output$plot <- renderPlot(plot())
+  # observeEvent(input$do_any, {})
 }

@@ -20,38 +20,6 @@ database_ui <- fluidPage(
 )
 
 database_server <- function(input, output, session) {
-  # output$conn_info <- renderText({
-  #   param <- list()
-  #   param$conn$dbms <- input$dbms
-  #   param$conn$path_to_driver <- input$path_to_driver
-  #   param$conn$connection_string <- input$connection_string
-  #
-  #   message(
-  #     "message param: ",
-  #     toString(param)
-  #   )
-  #
-  #   conn_info <- get_connection_details(param)
-  #
-  #   message(
-  #     "message conn_info: ",
-  #     toString(conn_info)
-  #   )
-  #
-  #   toString(conn_info)
-  # })
-
-  # database_params <- eventReactive(input$save_db_info, {
-  #   params <- list()
-  #   params$dbms <- input$dbms
-  #   params$path_to_driver <- input$path_to_driver
-  #   params$connection_string <- input$connection_string
-  #   params$cdm_database_schema <- input$cdm_database_schema
-  #   params$result_database_schema <- input$result_database_schema
-  #
-  #   params
-  # })
-
   observeEvent(input$print_db, {
     params <- list()
     params$dbms <- input$dbms
@@ -73,7 +41,9 @@ database_server <- function(input, output, session) {
     options = list(pageLength = 5)
   )
 
-  # render.table <- eventReactive(input$submit_table, {})
-  # observeEvent(input$submit_plot, {})
-  # observeEvent(input$submit_cluster, {})
+  # table <- eventReactive(input$get_table, {...})
+  # output$table <- renderDataTable(table())
+  # plot <- eventReactive(input$get_plot, {...})
+  # output$plot <- renderPlot(plot())
+  # observeEvent(input$do_any, {})
 }

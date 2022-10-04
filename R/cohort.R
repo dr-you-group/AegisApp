@@ -47,10 +47,6 @@ cohort_ui <- fluidPage(
 )
 
 cohort_server <- function(input, output, session) {
-  output$text_cohort <- renderText({
-    input$text_cohort
-  })
-
   observeEvent(input$print_cohort, {
     params <- list()
     params$target_cohort_definition_id <- input$target_cohort_definition_id
@@ -94,8 +90,9 @@ cohort_server <- function(input, output, session) {
     options = list(pageLength = 5)
   )
 
-
-  # render.table <- eventReactive(input$submit_table, {})
-  # observeEvent(input$submit_plot, {})
-  # observeEvent(input$submit_cluster, {})
+  # table <- eventReactive(input$get_table, {...})
+  # output$table <- renderDataTable(table())
+  # plot <- eventReactive(input$get_plot, {...})
+  # output$plot <- renderPlot(plot())
+  # observeEvent(input$do_any, {})
 }
