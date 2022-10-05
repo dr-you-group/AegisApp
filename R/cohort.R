@@ -21,7 +21,7 @@ cohort_tab <- tabsetPanel(
   tabPanel(
     title = "Get geo data",
 
-    selectInput("name", "Source of the geo data", c("GADM", "KOR")),
+    selectInput("name", "Source of the geo data", c("KOR", "GADM")),
     selectInput("country", "Country", c("KOR")),
     radioButtons("level", "Level of the administrative data", c(2:3)),
 
@@ -138,7 +138,7 @@ cohort_server <- function(input, output, session) {
   })
 
   output$geo <- renderDataTable(
-    geo(),
+    geo()@data,
     options = list(pageLength = 5)
   )
 
