@@ -1,4 +1,17 @@
 disease_map_ui <- fluidPage(
+  selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+  selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+  textInput("map_domain", "Domain", value = ""),
+  numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
+  checkboxInput("map_pretty", "Pretty", value = TRUE),
+  numericInput("map_n", "n", value = 9, min = 1, max = 9),
+  textInput("map_levels", "Levels", value = ""),
+  checkboxInput("map_ordered", "Ordered", value = FALSE),
+  textInput("map_na_color", "NA color", value = "#808080"),
+  checkboxInput("map_alpha", "Alpha", value = FALSE),
+  checkboxInput("map_reverse", "Reverse", value = FALSE),
+  checkboxInput("map_right", "Right", value = FALSE),
+
   actionButton("print_disease_map", "Print"),
   actionButton("plot_disease_map", "Plot disease map"),
 
@@ -8,6 +21,18 @@ disease_map_ui <- fluidPage(
 disease_map_server <- function(input, output, session) {
   observeEvent(input$print_disease_map, {
     params <- list()
+    params$color_type <- input$map_color_type
+    params$palette <- input$map_palette
+    params$domain <- input$map_domain
+    params$bins <- input$map_bins
+    params$pretty <- input$map_pretty
+    params$n <- input$map_n
+    params$levels <- input$map_levels
+    params$ordered <- input$map_ordered
+    params$na_color <- input$map_na_color
+    params$alpha <- input$map_alpha
+    params$reverse <- input$map_reverse
+    params$right <- input$map_right
 
     message("disease_map_params: ", toString(params))
 
@@ -41,6 +66,20 @@ disease_map_server <- function(input, output, session) {
     param <- base::list()
     param$data <- data
     param$stats <- deriv$stats
+    param$color$type <- input$map_color_type
+    param$color$param <- base::list(
+      palette <- input$map_palette,
+      domain <- input$map_domain,
+      bins <- as.numeric(input$map_bins),
+      pretty <- input$map_pretty,
+      n <- as.numeric(input$map_n),
+      levels <- input$map_levels,
+      ordered <- input$map_ordered,
+      na.color <- input$map_na_color,
+      alpha <- input$map_alpha,
+      reverse <- input$map_reverse,
+      right <- input$map_right,
+    )
 
     plot <- get_leaflet_map(param)
 
