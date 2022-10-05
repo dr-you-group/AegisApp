@@ -1,4 +1,4 @@
-disease_cluster_ui <- fluidPage(s
+disease_cluster_ui <- fluidPage(
   plotOutput("disease_cluster", width = "400px")
 )
 
