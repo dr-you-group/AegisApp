@@ -5,13 +5,13 @@ cohort_tab <- tabsetPanel(
   tabPanel(
     title = "Get cohort table",
 
-    selectInput("target_cohort_definition_id", "Target cohort definition id", c(1:10)),
-    selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", c(1:10)),
-    dateInput("cohort_start_date", "Cohort start date", "2020-01-01"),
-    dateInput("cohort_end_date", "Cohort end date", "2020-12-31"),
-    textInput("time_at_risk_start_date", "Time at risk start date", "0"),
-    textInput("time_at_risk_end_date", "Time at risk end date", "0"),
-    radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", c("cohort_start_date", "cohort_end_date")),
+    selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c(1:10)),
+    selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c(1:10)),
+    dateInput("cohort_start_date", "Cohort start date", value = "2020-01-01"),
+    dateInput("cohort_end_date", "Cohort end date", value = "2020-12-31"),
+    textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
+    textInput("time_at_risk_end_date", "Time at risk end date", value = "0"),
+    radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
 
     actionButton("print_cohort_table", "Print"),
     actionButton("get_cohort_table", "Get cohort table"),
@@ -21,9 +21,9 @@ cohort_tab <- tabsetPanel(
   tabPanel(
     title = "Get geo data",
 
-    selectInput("name", "Source of the geo data", c("KOR", "GADM")),
-    selectInput("country", "Country", c("KOR")),
-    radioButtons("level", "Level of the administrative data", c(2:3)),
+    selectInput("name", "Source of the geo data", choices = c("KOR", "GADM")),
+    selectInput("country", "Country", choices = c("KOR")),
+    radioButtons("level", "Level of the administrative data", choices = c(2:3)),
 
     actionButton("print_geo", "Print"),
     actionButton("get_geo", "Get geo data"),
@@ -33,9 +33,9 @@ cohort_tab <- tabsetPanel(
   tabPanel(
     title = "Get adjustmented table",
 
-    selectInput("mode", "Adjustment mode", c("Std", "Crd")),
-    selectInput("fraction", "Fraction", c("100000")),
-    selectInput("conf_level", "Confidence level", c("0.95")),
+    selectInput("mode", "Adjustment mode", choices = c("std", "crd")),
+    selectInput("fraction", "Fraction", choices = c("100000")),
+    selectInput("conf_level", "Confidence level", choices = c("0.95")),
 
     actionButton("print_table_adj", "Print"),
     actionButton("get_table_adj", "Get adjustmented table"),

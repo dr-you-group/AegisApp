@@ -7,11 +7,11 @@ database_params_init <- list(
 )
 
 database_ui <- fluidPage(
-  selectInput("dbms", "Database dialect", database_params_init$dbms),
-  textInput("path_to_driver", "JDBC path", database_params_init$path_to_driver),
-  textInput("connection_string", "Database connection string", database_params_init$connection_string),
-  textInput("cdm_database_schema", "CDM Database schema", database_params_init$cdm_database_schema),
-  textInput("result_database_schema", "Results Database schema", database_params_init$result_database_schema),
+  selectInput("dbms", "Database dialect", choices = database_params_init$dbms),
+  textInput("path_to_driver", "JDBC path", value = database_params_init$path_to_driver),
+  textInput("connection_string", "Database connection string", value = database_params_init$connection_string),
+  textInput("cdm_database_schema", "CDM Database schema", value = database_params_init$cdm_database_schema),
+  textInput("result_database_schema", "Results Database schema", value = database_params_init$result_database_schema),
 
   actionButton("print_db", "Print"),
   actionButton("get_cdm_source", "Get cdm source"),
