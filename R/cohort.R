@@ -13,7 +13,7 @@ cohort_tab <- tabsetPanel(
     textInput("time_at_risk_end_date", "Time at risk end date", "0"),
     radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", c("cohort_start_date", "cohort_end_date")),
 
-    actionButton("print_cohort", "Print"),
+    actionButton("print_cohort_table", "Print"),
     actionButton("get_cohort_table", "Get cohort table"),
 
     dataTableOutput("cohort_table")
@@ -37,7 +37,7 @@ cohort_tab <- tabsetPanel(
     selectInput("fraction", "Fraction", c("100000")),
     selectInput("conf_level", "Confidence level", c("0.95")),
 
-    actionButton("print_adj", "Print"),
+    actionButton("print_table_adj", "Print"),
     actionButton("get_table_adj", "Get adjustmented table"),
 
     dataTableOutput("table_adj")
@@ -49,7 +49,7 @@ cohort_ui <- fluidPage(
 )
 
 cohort_server <- function(input, output, session) {
-  observeEvent(input$print_cohort, {
+  observeEvent(input$print_cohort_table, {
     params <- list()
     params$target_cohort_definition_id <- input$target_cohort_definition_id
     params$outcome_cohort_definition_id <- input$outcome_cohort_definition_id
@@ -73,7 +73,7 @@ cohort_server <- function(input, output, session) {
 
   })
 
-  observeEvent(input$print_adj, {
+  observeEvent(input$print_table_adj, {
     params <- list()
     params$mode <- input$mode
     params$fraction <- input$fraction
