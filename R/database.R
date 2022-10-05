@@ -14,8 +14,10 @@ database_ui <- fluidPage(
   textInput("result_database_schema", "Results Database schema", database_params_init$result_database_schema),
 
   actionButton("print_db", "Print"),
+  actionButton("get_cdm_source", "Get cdm source"),
   actionButton("get_cohort_list", "Get cohort list"),
 
+  dataTableOutput("cdm_source"),
   dataTableOutput("cohort_list")
 )
 
@@ -32,8 +34,49 @@ database_server <- function(input, output, session) {
 
   })
 
+  cdm_source <- eventReactive(input$get_cdm_source, {
+    # Get connection details
+    param <- base::list()
+    param$conn$dbms <- input$dbms
+    param$conn$path_to_driver <- input$path_to_driver
+    param$conn$connection_string <- input$connection_string
+
+    conn_info <- get_connection_details(param)
+
+
+    # Get cdm source
+    param <- base::list()
+    param$conn_info <- conn_info
+    param$query$cdm_database_schema <- input$cdm_database_schema
+
+    cdm_source <- get_cdm_source(param)
+
+    cdm_source
+  })
+
+  output$cdm_source <- renderDataTable(
+    cdm_source(),
+    options = list(pageLength = 5)
+  )
+
   cohort_list <- eventReactive(input$get_cohort_list, {
-    mtcars
+    # Get connection details
+    param <- base::list()
+    param$conn$dbms <- input$dbms
+    param$conn$path_to_driver <- input$path_to_driver
+    param$conn$connection_string <- input$connection_string
+
+    conn_info <- get_connection_details(param)
+
+
+    # Get cohort list
+    param <- base::list()
+    param$conn_info <- conn_info
+    param$query$result_database_schema <- input$result_database_schema
+
+    cohort_list <- get_cohort_list_table(param)
+
+    cohort_list
   })
 
   output$cohort_list <- renderDataTable(
