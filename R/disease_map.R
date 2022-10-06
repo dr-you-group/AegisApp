@@ -7,9 +7,9 @@ disease_map_ui <- fluidPage(
     textInput("map_domain", "Domain", value = ""),
     numericInput("map_n", "n", value = 9, min = 1, max = 9),
     textInput("map_na_color", "NA color", value = "#808080"),
-    checkboxInput("map_alpha", "Alpha", value = FALSE),
-    checkboxInput("map_reverse", "Reverse", value = FALSE),
-    checkboxInput("map_right", "Right", value = FALSE)
+    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.map_color_type == 'colorBin'",
@@ -17,11 +17,11 @@ disease_map_ui <- fluidPage(
     selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("map_domain", "Domain", value = ""),
     numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
-    checkboxInput("map_pretty", "Pretty", value = TRUE),
+    selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
     textInput("map_na_color", "NA color", value = "#808080"),
-    checkboxInput("map_alpha", "Alpha", value = FALSE),
-    checkboxInput("map_reverse", "Reverse", value = FALSE),
-    checkboxInput("map_right", "Right", value = FALSE)
+    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.map_color_type == 'colorNumeric'",
@@ -29,8 +29,8 @@ disease_map_ui <- fluidPage(
     selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("map_domain", "Domain", value = ""),
     textInput("map_na_color", "NA color", value = "#808080"),
-    checkboxInput("map_alpha", "Alpha", value = FALSE),
-    checkboxInput("map_reverse", "Reverse", value = FALSE)
+    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.map_color_type == 'colorFactor'",
@@ -38,10 +38,10 @@ disease_map_ui <- fluidPage(
     selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("map_domain", "Domain", value = ""),
     textInput("map_levels", "Levels", value = ""),
-    checkboxInput("map_ordered", "Ordered", value = FALSE),
+    selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
     textInput("map_na_color", "NA color", value = "#808080"),
-    checkboxInput("map_alpha", "Alpha", value = FALSE),
-    checkboxInput("map_reverse", "Reverse", value = FALSE)
+    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
   ),
 
   actionButton("print_disease_map", "Print"),

@@ -10,7 +10,7 @@ AegisApp <- function(...) {
       database_ui
     ),
     tabPanel(
-      title = "Get cohort",
+      title = "Get data for analysis",
       cohort_ui
     ),
     tabPanel(

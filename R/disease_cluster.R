@@ -7,9 +7,9 @@ disease_cluster_ui <- fluidPage(
     textInput("cluster_domain", "Domain", value = ""),
     numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
     textInput("cluster_na_color", "NA color", value = "#808080"),
-    checkboxInput("cluster_alpha", "Alpha", value = FALSE),
-    checkboxInput("cluster_reverse", "Reverse", value = FALSE),
-    checkboxInput("cluster_right", "Right", value = FALSE)
+    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.cluster_color_type == 'colorBin'",
@@ -17,11 +17,11 @@ disease_cluster_ui <- fluidPage(
     selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("cluster_domain", "Domain", value = ""),
     numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
-    checkboxInput("cluster_pretty", "Pretty", value = TRUE),
+    selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
     textInput("cluster_na_color", "NA color", value = "#808080"),
-    checkboxInput("cluster_alpha", "Alpha", value = FALSE),
-    checkboxInput("cluster_reverse", "Reverse", value = FALSE),
-    checkboxInput("cluster_right", "Right", value = FALSE)
+    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.cluster_color_type == 'colorNumeric'",
@@ -29,8 +29,8 @@ disease_cluster_ui <- fluidPage(
     selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("cluster_domain", "Domain", value = ""),
     textInput("cluster_na_color", "NA color", value = "#808080"),
-    checkboxInput("cluster_alpha", "Alpha", value = FALSE),
-    checkboxInput("cluster_reverse", "Reverse", value = FALSE)
+    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
   ),
   conditionalPanel(
     condition = "input.cluster_color_type == 'colorFactor'",
@@ -38,10 +38,10 @@ disease_cluster_ui <- fluidPage(
     selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
     textInput("cluster_domain", "Domain", value = ""),
     textInput("cluster_levels", "Levels", value = ""),
-    checkboxInput("cluster_ordered", "Ordered", value = FALSE),
+    selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
     textInput("cluster_na_color", "NA color", value = "#808080"),
-    checkboxInput("cluster_alpha", "Alpha", value = FALSE),
-    checkboxInput("cluster_reverse", "Reverse", value = FALSE)
+    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
   ),
 
   actionButton("print_disease_cluster", "Print"),

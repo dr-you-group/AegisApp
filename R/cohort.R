@@ -11,7 +11,7 @@ cohort_tab <- tabsetPanel(
     dateInput("cohort_end_date", "Cohort end date", value = "2020-12-31"),
     textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
     textInput("time_at_risk_end_date", "Time at risk end date", value = "0"),
-    radioButtons("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
+    selectInput("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
 
     actionButton("print_cohort_table", "Print"),
     actionButton("get_cohort_table", "Get cohort table"),
@@ -23,7 +23,7 @@ cohort_tab <- tabsetPanel(
 
     selectInput("name", "Source of the geo data", choices = c("KOR", "GADM")),
     selectInput("country", "Country", choices = c("KOR")),
-    radioButtons("level", "Level of the administrative data", choices = c(2:3)),
+    selectInput("level", "Level of the administrative data", choices = c(2:3)),
 
     actionButton("print_geo", "Print"),
     actionButton("get_geo", "Get geo data"),
