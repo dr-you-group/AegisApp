@@ -93,7 +93,17 @@ disease_map_server <- function(input, output, session, transfer) {
 
   })
 
+  observe({
+    disable("plot_disease_map")
+
+    if(length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
+      enable("plot_disease_map")
+    }
+  })
+
   disease_map <- eventReactive(input$plot_disease_map, {
+    disable("plot_disease_map")
+
     # Generate graph file
     param <- base::list()
     param$geo <- transfer$geo()
@@ -137,6 +147,8 @@ disease_map_server <- function(input, output, session, transfer) {
     )
 
     plot <- get_leaflet_map(param)
+
+    enable("plot_disease_map")
 
     plot
   })

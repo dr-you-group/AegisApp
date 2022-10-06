@@ -93,7 +93,17 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
   })
 
+  observe({
+    disable("plot_disease_cluster")
+
+    if(length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
+      enable("plot_disease_cluster")
+    }
+  })
+
   disease_cluster <- eventReactive(input$plot_disease_cluster, {
+    disable("plot_disease_cluster")
+
     # Calculate disease cluster
     param <- base::list()
     param$table <- transfer$table_adj()
@@ -129,6 +139,8 @@ disease_cluster_server <- function(input, output, session, transfer) {
     )
 
     plot <- get_leaflet_map(param)
+
+    enable("plot_disease_cluster")
 
     plot
   })

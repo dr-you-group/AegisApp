@@ -99,8 +99,8 @@ database_server <- function(input, output, session, transfer) {
     param$conn_info <- conn_info
     param$query$result_database_schema <- input$result_database_schema
 
-    cohort_list <- get_cohort_list_table(param)
-    # cohort_list <- list(id = c(1:10), n = c(11:20))
+    # cohort_list <- get_cohort_list_table(param)
+    cohort_list <- data.frame(id = c(1:10), n = c(11:20))
     message("cohort_list: ", toString(cohort_list))
 
     cohort_list
@@ -112,7 +112,7 @@ database_server <- function(input, output, session, transfer) {
   )
 
   list(
-    cohort_list = reactive(cohort_list()$id)
+    cohort_ids = reactive(cohort_list()$id)
   )
 
   # table <- eventReactive(input$get_table, {...})

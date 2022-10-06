@@ -1,9 +1,11 @@
 library(shiny)
+library(shinyjs)
 library(leaflet)
 library(AegisFunc)
 
 AegisApp <- function(...) {
   ui <- navbarPage(
+    useShinyjs(),
     title = "AegisApp",
 
     tabPanel(

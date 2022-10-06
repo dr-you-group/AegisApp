@@ -121,19 +121,37 @@ cohort_server <- function(input, output, session, transfer) {
   })
 
   observe({
+    disable("get_cohort_table")
+
+    if(length(transfer$cohort_ids()) > 0) {
+      enable("get_cohort_table")
+    }
+  })
+
+  observe({
+    disable("get_table_adj")
+
+    if(length(cohort_table()) > 0 & length(geo()@data) > 0) {
+      enable("get_table_adj")
+    }
+  })
+
+  observe({
     updateSelectInput(
       session,
       "target_cohort_definition_id",
-      choices = transfer$cohort_list()
+      choices = transfer$cohort_ids()
     )
     updateSelectInput(
       session,
       "outcome_cohort_definition_id",
-      choices = transfer$cohort_list()
+      choices = transfer$cohort_ids()
     )
   })
 
   cohort_table <- eventReactive(input$get_cohort_table, {
+    disable("get_cohort_table")
+
     # Get connection details
     param <- base::list()
     param$conn$dbms <- input$dbms
@@ -158,6 +176,8 @@ cohort_server <- function(input, output, session, transfer) {
 
     cohort_table <- get_cohort_analysis_table(param)
 
+    enable("get_cohort_table")
+
     cohort_table
   })
 
@@ -167,6 +187,8 @@ cohort_server <- function(input, output, session, transfer) {
   )
 
   geo <- eventReactive(input$get_geo, {
+    disable("get_geo")
+
     # Get geo data
     param <- base::list()
     param$geo$name <- input$name
@@ -174,6 +196,8 @@ cohort_server <- function(input, output, session, transfer) {
     param$geo$level <- input$level
 
     geo <- get_geo_data(param)
+
+    enable("get_geo")
 
     geo
   })
@@ -184,6 +208,8 @@ cohort_server <- function(input, output, session, transfer) {
   )
 
   table_adj <- eventReactive(input$get_table_adj, {
+    disable("get_table_adj")
+
     # Map cohort table with geo data
     param <- base::list()
     param$latlong <- cohort_table()
@@ -207,6 +233,8 @@ cohort_server <- function(input, output, session, transfer) {
     param$adj$conf_level <- input$conf_level
 
     table_adj <- calculate_adjust_age_sex_indirectly(param)
+
+    enable("get_table_adj")
 
     table_adj
   })
