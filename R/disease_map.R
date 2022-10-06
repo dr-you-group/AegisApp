@@ -56,7 +56,10 @@ disease_map_ui <- fluidPage(
     ),
     mainPanel(
       # outputs
-      leafletOutput("disease_map", width = "400px")
+      leafletOutput("disease_map", width = "400px"),
+      hidden(
+        p(id = "work_disease_map", "Processing...")
+      )
     )
   )
 
@@ -103,6 +106,7 @@ disease_map_server <- function(input, output, session, transfer) {
 
   disease_map <- eventReactive(input$plot_disease_map, {
     disable("plot_disease_map")
+    show("work_disease_map")
 
     # Generate graph file
     param <- base::list()
@@ -148,6 +152,7 @@ disease_map_server <- function(input, output, session, transfer) {
 
     plot <- get_leaflet_map(param)
 
+    hide("work_disease_map")
     enable("plot_disease_map")
 
     plot

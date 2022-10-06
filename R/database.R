@@ -29,7 +29,13 @@ database_ui <- fluidPage(
     mainPanel(
       # outputs
       dataTableOutput("cdm_source"),
-      dataTableOutput("cohort_list")
+      dataTableOutput("cohort_list"),
+      hidden(
+        p(id = "work_cdm_source", "Processing...")
+      ),
+      hidden(
+        p(id = "work_cohort_list", "Processing...")
+      )
     )
   )
 
@@ -61,6 +67,7 @@ database_server <- function(input, output, session, transfer) {
 
   cdm_source <- eventReactive(input$get_cdm_source, {
     disable("get_cdm_source")
+    show("work_cdm_source")
 
     # Get connection details
     param <- base::list()
@@ -78,6 +85,7 @@ database_server <- function(input, output, session, transfer) {
 
     cdm_source <- get_cdm_source(param)
 
+    hide("work_cdm_source")
     enable("get_cdm_source")
 
     cdm_source
@@ -90,6 +98,7 @@ database_server <- function(input, output, session, transfer) {
 
   cohort_list <- eventReactive(input$get_cohort_list, {
     disable("get_cohort_list")
+    show("work_cohort_list")
 
     # Get connection details
     param <- base::list()
@@ -109,6 +118,7 @@ database_server <- function(input, output, session, transfer) {
     cohort_list <- data.frame(id = c(1:10), n = c(11:20))
     message("cohort_list: ", toString(cohort_list))
 
+    hide("work_cohort_list")
     enable("get_cohort_list")
 
     cohort_list

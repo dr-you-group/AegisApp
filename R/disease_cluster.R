@@ -56,7 +56,10 @@ disease_cluster_ui <- fluidPage(
     ),
     mainPanel(
       # outputs
-      leafletOutput("disease_cluster", width = "400px")
+      leafletOutput("disease_cluster", width = "400px"),
+      hidden(
+        p(id = "work_disease_cluster", "Processing...")
+      )
     )
   )
 
@@ -103,6 +106,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
   disease_cluster <- eventReactive(input$plot_disease_cluster, {
     disable("plot_disease_cluster")
+    show("work_disease_cluster")
 
     # Calculate disease cluster
     param <- base::list()
@@ -140,6 +144,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
     plot <- get_leaflet_map(param)
 
+    hide("work_disease_cluster")
     enable("plot_disease_cluster")
 
     plot

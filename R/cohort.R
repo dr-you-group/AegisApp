@@ -21,7 +21,10 @@ cohort_tab <- tabsetPanel(
       ),
       mainPanel(
         # outputs
-        dataTableOutput("cohort_table")
+        dataTableOutput("cohort_table"),
+        hidden(
+          p(id = "work_cohort_table", "Processing...")
+        )
       )
     )
   ),
@@ -40,7 +43,10 @@ cohort_tab <- tabsetPanel(
       ),
       mainPanel(
         # outputs
-        dataTableOutput("geo")
+        dataTableOutput("geo"),
+        hidden(
+          p(id = "work_geo", "Processing...")
+        )
       )
     )
   ),
@@ -59,7 +65,10 @@ cohort_tab <- tabsetPanel(
       ),
       mainPanel(
         # outputs
-        dataTableOutput("table_adj")
+        dataTableOutput("table_adj"),
+        hidden(
+          p(id = "work_table_adj", "Processing...")
+        )
       )
     )
   )
@@ -151,6 +160,7 @@ cohort_server <- function(input, output, session, transfer) {
 
   cohort_table <- eventReactive(input$get_cohort_table, {
     disable("get_cohort_table")
+    show("work_cohort_table")
 
     # Get connection details
     param <- base::list()
@@ -176,6 +186,7 @@ cohort_server <- function(input, output, session, transfer) {
 
     cohort_table <- get_cohort_analysis_table(param)
 
+    hide("work_cohort_table")
     enable("get_cohort_table")
 
     cohort_table
@@ -188,6 +199,7 @@ cohort_server <- function(input, output, session, transfer) {
 
   geo <- eventReactive(input$get_geo, {
     disable("get_geo")
+    show("work_geo")
 
     # Get geo data
     param <- base::list()
@@ -197,6 +209,7 @@ cohort_server <- function(input, output, session, transfer) {
 
     geo <- get_geo_data(param)
 
+    hide("work_geo")
     enable("get_geo")
 
     geo
@@ -209,6 +222,7 @@ cohort_server <- function(input, output, session, transfer) {
 
   table_adj <- eventReactive(input$get_table_adj, {
     disable("get_table_adj")
+    show("work_table_adj")
 
     # Map cohort table with geo data
     param <- base::list()
@@ -234,6 +248,7 @@ cohort_server <- function(input, output, session, transfer) {
 
     table_adj <- calculate_adjust_age_sex_indirectly(param)
 
+    hide("work_table_adj")
     enable("get_table_adj")
 
     table_adj
