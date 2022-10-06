@@ -1,53 +1,76 @@
 disease_map_ui <- fluidPage(
-  selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
-  conditionalPanel(
-    condition = "input.map_color_type == 'colorQuantile'",
-
-    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("map_domain", "Domain", value = ""),
-    numericInput("map_n", "n", value = 9, min = 1, max = 9),
-    textInput("map_na_color", "NA color", value = "#808080"),
-    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+  titlePanel(
+    # app title/description
+    "Plot disease map"
   ),
-  conditionalPanel(
-    condition = "input.map_color_type == 'colorBin'",
+  sidebarLayout(
+    sidebarPanel(
+      # inputs
+      selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      conditionalPanel(
+        condition = "input.map_color_type == 'colorQuantile'",
 
-    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("map_domain", "Domain", value = ""),
-    numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
-    selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-    textInput("map_na_color", "NA color", value = "#808080"),
-    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
-  conditionalPanel(
-    condition = "input.map_color_type == 'colorNumeric'",
+        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("map_domain", "Domain", value = ""),
+        numericInput("map_n", "n", value = 9, min = 1, max = 9),
+        textInput("map_na_color", "NA color", value = "#808080"),
+        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.map_color_type == 'colorBin'",
 
-    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("map_domain", "Domain", value = ""),
-    textInput("map_na_color", "NA color", value = "#808080"),
-    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
-  conditionalPanel(
-    condition = "input.map_color_type == 'colorFactor'",
+        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("map_domain", "Domain", value = ""),
+        numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
+        selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
+        textInput("map_na_color", "NA color", value = "#808080"),
+        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.map_color_type == 'colorNumeric'",
 
-    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("map_domain", "Domain", value = ""),
-    textInput("map_levels", "Levels", value = ""),
-    selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-    textInput("map_na_color", "NA color", value = "#808080"),
-    selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
+        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("map_domain", "Domain", value = ""),
+        textInput("map_na_color", "NA color", value = "#808080"),
+        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.map_color_type == 'colorFactor'",
 
-  actionButton("print_disease_map", "Print"),
-  actionButton("plot_disease_map", "Plot disease map"),
+        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("map_domain", "Domain", value = ""),
+        textInput("map_levels", "Levels", value = ""),
+        selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
+        textInput("map_na_color", "NA color", value = "#808080"),
+        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
 
-  plotOutput("disease_map", width = "400px")
+      actionButton("print_disease_map", "Print"),
+      actionButton("plot_disease_map", "Plot disease map")
+    ),
+    mainPanel(
+      # outputs
+      plotOutput("disease_map", width = "400px")
+    )
+  )
+
+  # titlePanel(
+  #   # app title/description
+  # ),
+  # sidebarLayout(
+  #   sidebarPanel(
+  #     # inputs
+  #   ),
+  #   mainPanel(
+  #     # outputs
+  #   )
+  # )
 )
 
 disease_map_server <- function(input, output, session) {

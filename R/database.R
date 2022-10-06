@@ -7,18 +7,43 @@ database_params_init <- list(
 )
 
 database_ui <- fluidPage(
-  selectInput("dbms", "Database dialect", choices = database_params_init$dbms),
-  textInput("path_to_driver", "JDBC path", value = database_params_init$path_to_driver),
-  textInput("connection_string", "Database connection string", value = database_params_init$connection_string),
-  textInput("cdm_database_schema", "CDM Database schema", value = database_params_init$cdm_database_schema),
-  textInput("result_database_schema", "Results Database schema", value = database_params_init$result_database_schema),
+  titlePanel(
+    # app title/description
+    "Connect to your database"
+  ),
+  sidebarLayout(
+    sidebarPanel(
+      # inputs
+      selectInput("dbms", "Database dialect", choices = database_params_init$dbms),
+      textInput("path_to_driver", "JDBC path", value = database_params_init$path_to_driver),
+      textInput("connection_string", "Database connection string", value = database_params_init$connection_string),
+      textInput("cdm_database_schema", "CDM Database schema", value = database_params_init$cdm_database_schema),
+      textInput("result_database_schema", "Results Database schema", value = database_params_init$result_database_schema),
 
-  actionButton("print_db", "Print"),
-  actionButton("get_cdm_source", "Get cdm source"),
-  actionButton("get_cohort_list", "Get cohort list"),
+      verticalLayout(
+        actionButton("print_db", "Print"),
+        actionButton("get_cdm_source", "Get cdm source"),
+        actionButton("get_cohort_list", "Get cohort list")
+      )
+    ),
+    mainPanel(
+      # outputs
+      dataTableOutput("cdm_source"),
+      dataTableOutput("cohort_list")
+    )
+  )
 
-  dataTableOutput("cdm_source"),
-  dataTableOutput("cohort_list")
+  # titlePanel(
+  #   # app title/description
+  # ),
+  # sidebarLayout(
+  #   sidebarPanel(
+  #     # inputs
+  #   ),
+  #   mainPanel(
+  #     # outputs
+  #   )
+  # )
 )
 
 database_server <- function(input, output, session) {

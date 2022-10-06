@@ -1,53 +1,76 @@
 disease_cluster_ui <- fluidPage(
-  selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
-  conditionalPanel(
-    condition = "input.cluster_color_type == 'colorQuantile'",
-
-    selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("cluster_domain", "Domain", value = ""),
-    numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
-    textInput("cluster_na_color", "NA color", value = "#808080"),
-    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+  titlePanel(
+    # app title/description
+    "Plot disease cluster"
   ),
-  conditionalPanel(
-    condition = "input.cluster_color_type == 'colorBin'",
+  sidebarLayout(
+    sidebarPanel(
+      # inputs
+      selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      conditionalPanel(
+        condition = "input.cluster_color_type == 'colorQuantile'",
 
-    selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("cluster_domain", "Domain", value = ""),
-    numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
-    selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-    textInput("cluster_na_color", "NA color", value = "#808080"),
-    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
-  conditionalPanel(
-    condition = "input.cluster_color_type == 'colorNumeric'",
+        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("cluster_domain", "Domain", value = ""),
+        numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
+        textInput("cluster_na_color", "NA color", value = "#808080"),
+        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.cluster_color_type == 'colorBin'",
 
-    selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("cluster_domain", "Domain", value = ""),
-    textInput("cluster_na_color", "NA color", value = "#808080"),
-    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
-  conditionalPanel(
-    condition = "input.cluster_color_type == 'colorFactor'",
+        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("cluster_domain", "Domain", value = ""),
+        numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
+        selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
+        textInput("cluster_na_color", "NA color", value = "#808080"),
+        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.cluster_color_type == 'colorNumeric'",
 
-    selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-    textInput("cluster_domain", "Domain", value = ""),
-    textInput("cluster_levels", "Levels", value = ""),
-    selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-    textInput("cluster_na_color", "NA color", value = "#808080"),
-    selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-    selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-  ),
+        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("cluster_domain", "Domain", value = ""),
+        textInput("cluster_na_color", "NA color", value = "#808080"),
+        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      conditionalPanel(
+        condition = "input.cluster_color_type == 'colorFactor'",
 
-  actionButton("print_disease_cluster", "Print"),
-  actionButton("plot_disease_cluster", "Plot disease cluster"),
+        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        textInput("cluster_domain", "Domain", value = ""),
+        textInput("cluster_levels", "Levels", value = ""),
+        selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
+        textInput("cluster_na_color", "NA color", value = "#808080"),
+        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
 
-  plotOutput("disease_cluster", width = "400px")
+      actionButton("print_disease_cluster", "Print"),
+      actionButton("plot_disease_cluster", "Plot disease cluster")
+    ),
+    mainPanel(
+      # outputs
+      plotOutput("disease_cluster", width = "400px")
+    )
+  )
+
+  # titlePanel(
+  #   # app title/description
+  # ),
+  # sidebarLayout(
+  #   sidebarPanel(
+  #     # inputs
+  #   ),
+  #   mainPanel(
+  #     # outputs
+  #   )
+  # )
 )
 
 disease_cluster_server <- function(input, output, session) {
