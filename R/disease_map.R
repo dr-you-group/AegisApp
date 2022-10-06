@@ -1,16 +1,48 @@
 disease_map_ui <- fluidPage(
   selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
-  selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-  textInput("map_domain", "Domain", value = ""),
-  numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
-  checkboxInput("map_pretty", "Pretty", value = TRUE),
-  numericInput("map_n", "n", value = 9, min = 1, max = 9),
-  textInput("map_levels", "Levels", value = ""),
-  checkboxInput("map_ordered", "Ordered", value = FALSE),
-  textInput("map_na_color", "NA color", value = "#808080"),
-  checkboxInput("map_alpha", "Alpha", value = FALSE),
-  checkboxInput("map_reverse", "Reverse", value = FALSE),
-  checkboxInput("map_right", "Right", value = FALSE),
+  conditionalPanel(
+    condition = "input.map_color_type == 'colorQuantile'",
+
+    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+    textInput("map_domain", "Domain", value = ""),
+    numericInput("map_n", "n", value = 9, min = 1, max = 9),
+    textInput("map_na_color", "NA color", value = "#808080"),
+    checkboxInput("map_alpha", "Alpha", value = FALSE),
+    checkboxInput("map_reverse", "Reverse", value = FALSE),
+    checkboxInput("map_right", "Right", value = FALSE)
+  ),
+  conditionalPanel(
+    condition = "input.map_color_type == 'colorBin'",
+
+    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+    textInput("map_domain", "Domain", value = ""),
+    numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
+    checkboxInput("map_pretty", "Pretty", value = TRUE),
+    textInput("map_na_color", "NA color", value = "#808080"),
+    checkboxInput("map_alpha", "Alpha", value = FALSE),
+    checkboxInput("map_reverse", "Reverse", value = FALSE),
+    checkboxInput("map_right", "Right", value = FALSE)
+  ),
+  conditionalPanel(
+    condition = "input.map_color_type == 'colorNumeric'",
+
+    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+    textInput("map_domain", "Domain", value = ""),
+    textInput("map_na_color", "NA color", value = "#808080"),
+    checkboxInput("map_alpha", "Alpha", value = FALSE),
+    checkboxInput("map_reverse", "Reverse", value = FALSE)
+  ),
+  conditionalPanel(
+    condition = "input.map_color_type == 'colorFactor'",
+
+    selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+    textInput("map_domain", "Domain", value = ""),
+    textInput("map_levels", "Levels", value = ""),
+    checkboxInput("map_ordered", "Ordered", value = FALSE),
+    textInput("map_na_color", "NA color", value = "#808080"),
+    checkboxInput("map_alpha", "Alpha", value = FALSE),
+    checkboxInput("map_reverse", "Reverse", value = FALSE)
+  ),
 
   actionButton("print_disease_map", "Print"),
   actionButton("plot_disease_map", "Plot disease map"),
