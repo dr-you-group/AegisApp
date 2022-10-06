@@ -60,6 +60,8 @@ database_server <- function(input, output, session, transfer) {
   })
 
   cdm_source <- eventReactive(input$get_cdm_source, {
+    disable("get_cdm_source")
+
     # Get connection details
     param <- base::list()
     param$conn$dbms <- input$dbms
@@ -76,6 +78,8 @@ database_server <- function(input, output, session, transfer) {
 
     cdm_source <- get_cdm_source(param)
 
+    enable("get_cdm_source")
+
     cdm_source
   })
 
@@ -85,6 +89,8 @@ database_server <- function(input, output, session, transfer) {
   )
 
   cohort_list <- eventReactive(input$get_cohort_list, {
+    disable("get_cohort_list")
+
     # Get connection details
     param <- base::list()
     param$conn$dbms <- input$dbms
@@ -102,6 +108,8 @@ database_server <- function(input, output, session, transfer) {
     # cohort_list <- get_cohort_list_table(param)
     cohort_list <- data.frame(id = c(1:10), n = c(11:20))
     message("cohort_list: ", toString(cohort_list))
+
+    enable("get_cohort_list")
 
     cohort_list
   })
