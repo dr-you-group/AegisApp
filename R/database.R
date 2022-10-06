@@ -46,7 +46,7 @@ database_ui <- fluidPage(
   # )
 )
 
-database_server <- function(input, output, session) {
+database_server <- function(input, output, session, transfer) {
   observeEvent(input$print_db, {
     params <- list()
     params$dbms <- input$dbms
@@ -99,7 +99,9 @@ database_server <- function(input, output, session) {
     param$conn_info <- conn_info
     param$query$result_database_schema <- input$result_database_schema
 
-    cohort_list <- get_cohort_list_table(param)
+    # cohort_list <- get_cohort_list_table(param)
+    cohort_list <- list(id = c(1:10), n = c(11:20))
+    message("cohort_list: ", toString(cohort_list))
 
     cohort_list
   })
@@ -107,6 +109,10 @@ database_server <- function(input, output, session) {
   output$cohort_list <- renderDataTable(
     cohort_list(),
     options = list(pageLength = 5)
+  )
+
+  list(
+    cohort_list = reactive(cohort_list()$id)
   )
 
   # table <- eventReactive(input$get_table, {...})

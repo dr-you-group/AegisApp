@@ -1,4 +1,5 @@
 library(shiny)
+library(leaflet)
 library(AegisFunc)
 
 AegisApp <- function(...) {
@@ -24,10 +25,10 @@ AegisApp <- function(...) {
   )
 
   server <- function(input, output, session) {
-    database_server(input, output, session)
-    cohort_server(input, output, session)
-    disease_map_server(input, output, session)
-    disease_cluster_server(input, output, session)
+    database <- database_server(input, output, session)
+    cohort <- cohort_server(input, output, session, database)
+    disease_map_server(input, output, session, cohort)
+    disease_cluster_server(input, output, session, cohort)
   }
 
   shinyApp(ui, server, ...)

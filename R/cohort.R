@@ -8,8 +8,8 @@ cohort_tab <- tabsetPanel(
     sidebarLayout(
       sidebarPanel(
         # inputs
-        selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c(1:10)),
-        selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c(1:10)),
+        selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c()),
+        selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c()),
         dateInput("cohort_start_date", "Cohort start date", value = "2020-01-01"),
         dateInput("cohort_end_date", "Cohort end date", value = "2020-12-31"),
         textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
@@ -85,7 +85,7 @@ cohort_ui <- fluidPage(
   # )
 )
 
-cohort_server <- function(input, output, session) {
+cohort_server <- function(input, output, session, transfer) {
   observeEvent(input$print_cohort_table, {
     params <- list()
     params$target_cohort_definition_id <- input$target_cohort_definition_id
@@ -118,6 +118,19 @@ cohort_server <- function(input, output, session) {
 
     message("adj_params: ", toString(params))
 
+  })
+
+  observe({
+    updateSelectInput(
+      session,
+      "target_cohort_definition_id",
+      choices = transfer$cohort_list()
+    )
+    updateSelectInput(
+      session,
+      "outcome_cohort_definition_id",
+      choices = transfer$cohort_list()
+    )
   })
 
   cohort_table <- eventReactive(input$get_cohort_table, {
@@ -201,6 +214,11 @@ cohort_server <- function(input, output, session) {
   output$table_adj <- renderDataTable(
     table_adj(),
     options = list(pageLength = 5)
+  )
+
+  list(
+    geo = reactive(geo()),
+    table_adj = reactive(table_adj())
   )
 
   # table <- eventReactive(input$get_table, {...})

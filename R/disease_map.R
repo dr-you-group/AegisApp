@@ -56,7 +56,7 @@ disease_map_ui <- fluidPage(
     ),
     mainPanel(
       # outputs
-      plotOutput("disease_map", width = "400px")
+      leafletOutput("disease_map", width = "400px")
     )
   )
 
@@ -73,7 +73,7 @@ disease_map_ui <- fluidPage(
   # )
 )
 
-disease_map_server <- function(input, output, session) {
+disease_map_server <- function(input, output, session, transfer) {
   observeEvent(input$print_disease_map, {
     params <- list()
     params$color_type <- input$map_color_type
@@ -96,14 +96,14 @@ disease_map_server <- function(input, output, session) {
   disease_map <- eventReactive(input$plot_disease_map, {
     # Generate graph file
     param <- base::list()
-    param$geo <- geo()
+    param$geo <- transfer$geo()
 
     graph_file_path <- trans_geo_to_graph(param)
 
 
     # Calculate disease map
     param <- base::list()
-    param$table <- table_adj()
+    param$table <- transfer$table_adj()
     param$graph_file_path <- graph_file_path
 
     deriv <- calculate_disease_map(param)
@@ -111,7 +111,7 @@ disease_map_server <- function(input, output, session) {
 
     # Merge geo data with derivatives
     param <- base::list()
-    param$geo <- geo()
+    param$geo <- transfer$geo()
     param$deriv <- deriv$arranged_table
 
     data <- merge_geo_with_deriv(param)
@@ -141,9 +141,8 @@ disease_map_server <- function(input, output, session) {
     plot
   })
 
-  output$disease_map <- renderPlot(
-    disease_map(),
-    res = 96
+  output$disease_map <- renderLeaflet(
+    disease_map()
   )
 
   # table <- eventReactive(input$get_table, {...})
