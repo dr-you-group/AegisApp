@@ -114,9 +114,9 @@ database_server <- function(input, output, session, transfer) {
     param$conn_info <- conn_info
     param$query$result_database_schema <- input$result_database_schema
 
-    # cohort_list <- get_cohort_list_table(param)
-    cohort_list <- data.frame(id = c(1:10), n = c(11:20))
-    message("cohort_list: ", toString(cohort_list))
+    cohort_list <- get_cohort_list_table(param)
+    # cohort_list <- data.frame(id = c(1:10), n = c(11:20))
+    # message("cohort_list: ", toString(cohort_list))
 
     hide("work_cohort_list")
     enable("get_cohort_list")
