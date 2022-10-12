@@ -80,18 +80,6 @@ cohort_ui <- fluidPage(
     "Pre-processing your data"
   ),
   cohort_tab
-
-  # titlePanel(
-  #   # app title/description
-  # ),
-  # sidebarLayout(
-  #   sidebarPanel(
-  #     # inputs
-  #   ),
-  #   mainPanel(
-  #     # outputs
-  #   )
-  # )
 )
 
 cohort_server <- function(input, output, session, transfer) {
@@ -163,28 +151,41 @@ cohort_server <- function(input, output, session, transfer) {
     show("work_cohort_table")
 
     # Get connection details
-    param <- base::list()
-    param$conn$dbms <- input$dbms
-    param$conn$path_to_driver <- input$path_to_driver
-    param$conn$connection_string <- input$connection_string
+    dbms <- input$dbms
+    path_to_driver <- input$path_to_driver
+    connection_string <- input$connection_string
 
-    conn_info <- get_connection_details(param)
+    conn_info <- get_connection_details(
+      dbms = dbms,
+      path_to_driver = path_to_driver,
+      connection_string = connection_string
+    )
 
 
     # Get cohort table
-    param <- base::list()
-    param$conn_info <- conn_info
-    param$query$cdm_database_schema <- input$cdm_database_schema
-    param$query$result_database_schema <- input$result_database_schema
-    param$query$target_cohort_definition_id <- input$target_cohort_definition_id
-    param$query$outcome_cohort_definition_id <- input$outcome_cohort_definition_id
-    param$query$cohort_start_date <- input$cohort_start_date
-    param$query$cohort_end_date <- input$cohort_end_date
-    param$query$time_at_risk_start_date <- input$time_at_risk_start_date
-    param$query$time_at_risk_end_date <- input$time_at_risk_end_date
-    param$query$time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
+    conn_info <- conn_info
+    cdm_database_schema <- input$cdm_database_schema
+    result_database_schema <- input$result_database_schema
+    target_cohort_definition_id <- input$target_cohort_definition_id
+    outcome_cohort_definition_id <- input$outcome_cohort_definition_id
+    cohort_start_date <- input$cohort_start_date
+    cohort_end_date <- input$cohort_end_date
+    time_at_risk_start_date <- input$time_at_risk_start_date
+    time_at_risk_end_date <- input$time_at_risk_end_date
+    time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
 
-    cohort_table <- get_cohort_analysis_table(param)
+    cohort_table <- get_cohort_analysis_table(
+      conn_info = conn_info,
+      cdm_database_schema = cdm_database_schema,
+      result_database_schema = result_database_schema,
+      target_cohort_definition_id = target_cohort_definition_id,
+      outcome_cohort_definition_id = outcome_cohort_definition_id,
+      cohort_start_date = cohort_start_date,
+      cohort_end_date = cohort_end_date,
+      time_at_risk_start_date = time_at_risk_start_date,
+      time_at_risk_end_date = time_at_risk_end_date,
+      time_at_risk_end_date_panel = time_at_risk_end_date_panel
+    )
 
     hide("work_cohort_table")
     enable("get_cohort_table")
@@ -202,12 +203,15 @@ cohort_server <- function(input, output, session, transfer) {
     show("work_geo")
 
     # Get geo data
-    param <- base::list()
-    param$geo$name <- input$name
-    param$geo$country <- input$country
-    param$geo$level <- input$level
+    name <- input$name
+    country <- input$country
+    level <- input$level
 
-    geo <- get_geo_data(param)
+    geo <- get_geo_data(
+      name = name,
+      country = country,
+      level = level
+    )
 
     hide("work_geo")
     enable("get_geo")
@@ -225,28 +229,35 @@ cohort_server <- function(input, output, session, transfer) {
     show("work_table_adj")
 
     # Map cohort table with geo data
-    param <- base::list()
-    param$latlong <- cohort_table()
-    param$geo <- geo()
+    latlong <- cohort_table()
+    geo <- geo()
 
-    geo_map <- map_latlong_geo(param)
+    geo_map <- map_latlong_geo(
+      latlong = latlong,
+      geo = geo
+    )
 
 
     # Arrange table
-    param <- base::list()
-    param$table <- geo_map
+    table <- geo_map
 
-    table_arr <- calculate_count_with_geo_oid(param)
+    table_arr <- calculate_count_with_geo_oid(
+      table = table
+    )
 
 
     # Adjustment for age and sex
-    param <- base::list()
-    param$table <- table_arr
-    param$adj$mode <- input$mode
-    param$adj$fraction <- input$fraction
-    param$adj$conf_level <- input$conf_level
+    table <- table_arr
+    mode <- input$mode
+    fraction <- input$fraction
+    conf_level <- input$conf_level
 
-    table_adj <- calculate_adjust_age_sex_indirectly(param)
+    table_adj <- calculate_adjust_age_sex_indirectly(
+      table = table,
+      mode = mode,
+      fraction = fraction,
+      conf_level = conf_level
+    )
 
     hide("work_table_adj")
     enable("get_table_adj")
@@ -263,10 +274,4 @@ cohort_server <- function(input, output, session, transfer) {
     geo = reactive(geo()),
     table_adj = reactive(table_adj())
   )
-
-  # table <- eventReactive(input$get_table, {...})
-  # output$table <- renderDataTable(table())
-  # plot <- eventReactive(input$get_plot, {...})
-  # output$plot <- renderPlot(plot())
-  # observeEvent(input$do_any, {})
 }

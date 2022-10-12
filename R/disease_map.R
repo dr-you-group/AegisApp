@@ -62,18 +62,6 @@ disease_map_ui <- fluidPage(
       )
     )
   )
-
-  # titlePanel(
-  #   # app title/description
-  # ),
-  # sidebarLayout(
-  #   sidebarPanel(
-  #     # inputs
-  #   ),
-  #   mainPanel(
-  #     # outputs
-  #   )
-  # )
 )
 
 disease_map_server <- function(input, output, session, transfer) {
@@ -109,34 +97,38 @@ disease_map_server <- function(input, output, session, transfer) {
     show("work_disease_map")
 
     # Generate graph file
-    param <- base::list()
-    param$geo <- transfer$geo()
+    geo <- transfer$geo()
 
-    graph_file_path <- trans_geo_to_graph(param)
+    graph_file_path <- trans_geo_to_graph(
+      geo = geo
+    )
 
 
     # Calculate disease map
-    param <- base::list()
-    param$table <- transfer$table_adj()
-    param$graph_file_path <- graph_file_path
+    table <- transfer$table_adj()
+    graph_file_path <- graph_file_path
 
-    deriv <- calculate_disease_map(param)
+    deriv <- calculate_disease_map(
+      table = table,
+      graph_file_path = graph_file_path
+    )
 
 
     # Merge geo data with derivatives
-    param <- base::list()
-    param$geo <- transfer$geo()
-    param$deriv <- deriv$arranged_table
+    geo <- transfer$geo()
+    deriv <- deriv$arranged_table
 
-    data <- merge_geo_with_deriv(param)
+    data <- merge_geo_with_deriv(
+      geo = geo,
+      deriv = deriv
+    )
 
 
     # Plot disease map
-    param <- base::list()
-    param$data <- data
-    param$stats <- deriv$stats
-    param$color$type <- input$map_color_type
-    param$color$param <- base::list(
+    data <- data
+    stats <- deriv$stats
+    color_type <- input$map_color_type
+    color_param <- base::list(
       palette <- input$map_palette,
       domain <- input$map_domain,
       bins <- as.numeric(input$map_bins),
@@ -150,7 +142,12 @@ disease_map_server <- function(input, output, session, transfer) {
       right <- input$map_right,
     )
 
-    plot <- get_leaflet_map(param)
+    plot <- get_leaflet_map(
+      data = data,
+      stats = stats,
+      color_type = color_type,
+      color_param = color_param
+    )
 
     hide("work_disease_map")
     enable("plot_disease_map")
@@ -161,10 +158,4 @@ disease_map_server <- function(input, output, session, transfer) {
   output$disease_map <- renderLeaflet(
     disease_map()
   )
-
-  # table <- eventReactive(input$get_table, {...})
-  # output$table <- renderDataTable(table())
-  # plot <- eventReactive(input$get_plot, {...})
-  # output$plot <- renderPlot(plot())
-  # observeEvent(input$do_any, {})
 }

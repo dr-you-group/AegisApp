@@ -62,18 +62,6 @@ disease_cluster_ui <- fluidPage(
       )
     )
   )
-
-  # titlePanel(
-  #   # app title/description
-  # ),
-  # sidebarLayout(
-  #   sidebarPanel(
-  #     # inputs
-  #   ),
-  #   mainPanel(
-  #     # outputs
-  #   )
-  # )
 )
 
 disease_cluster_server <- function(input, output, session, transfer) {
@@ -109,26 +97,28 @@ disease_cluster_server <- function(input, output, session, transfer) {
     show("work_disease_cluster")
 
     # Calculate disease cluster
-    param <- base::list()
-    param$table <- transfer$table_adj()
+    table <- transfer$table_adj()
 
-    deriv <- calculate_disease_cluster(param)
+    deriv <- calculate_disease_cluster(
+      table = table
+    )
 
 
     # Merge geo data with derivatives
-    param <- base::list()
-    param$geo <- transfer$geo()
-    param$deriv <- deriv$arranged_table
+    geo <- transfer$geo()
+    deriv <- deriv$arranged_table
 
-    data <- merge_geo_with_deriv(param)
+    data <- merge_geo_with_deriv(
+      geo = geo,
+      deriv = deriv
+    )
 
 
     # Plot disease map
-    param <- base::list()
-    param$data <- data
-    param$stats <- deriv$stats
-    param$color$type <- input$cluster_color_type
-    param$color$param <- base::list(
+    data <- data
+    stats <- deriv$stats
+    color_type <- input$cluster_color_type
+    color_param <- base::list(
       palette <- input$cluster_palette,
       domain <- input$cluster_domain,
       bins <- as.numeric(input$cluster_bins),
@@ -142,7 +132,12 @@ disease_cluster_server <- function(input, output, session, transfer) {
       right <- input$cluster_right,
     )
 
-    plot <- get_leaflet_map(param)
+    plot <- get_leaflet_map(
+      data = data,
+      stats = stats,
+      color_type = color_type,
+      color_param = color_param
+    )
 
     hide("work_disease_cluster")
     enable("plot_disease_cluster")
@@ -153,10 +148,4 @@ disease_cluster_server <- function(input, output, session, transfer) {
   output$disease_cluster <- renderLeaflet(
     disease_cluster()
   )
-
-  # table <- eventReactive(input$get_table, {...})
-  # output$table <- renderDataTable(table())
-  # plot <- eventReactive(input$get_plot, {...})
-  # output$plot <- renderPlot(plot())
-  # observeEvent(input$do_any, {})
 }
