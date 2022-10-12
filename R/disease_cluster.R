@@ -11,7 +11,7 @@ disease_cluster_ui <- shiny::fluidPage(
         condition = "input.cluster_color_type == 'colorQuantile'",
         shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         shiny::textInput("cluster_domain", "Domain", value = ""),
-        shiny::numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
+        shiny::numericInput("cluster_n", "n", value = 1, min = 1, max = 9),
         shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
         shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
@@ -96,16 +96,19 @@ disease_cluster_server <- function(input, output, session, transfer) {
     deriv <- AegisFunc::calculate_disease_cluster(
       table = table
     )
+    message("len deriv: ", toString(length(deriv)))
 
 
     # Merge geo data with derivatives
     geo <- transfer$geo()
-    deriv <- deriv$arranged_table
+    deriv_arr <- deriv$arranged_table
 
     data <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
-      deriv = deriv
+      deriv = deriv_arr
     )
+    message("len geo: ", toString(length(geo)))
+    message("len deriv arrange: ", toString(length(deriv)))
 
 
     # Plot disease map

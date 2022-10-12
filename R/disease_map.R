@@ -110,11 +110,11 @@ disease_map_server <- function(input, output, session, transfer) {
 
     # Merge geo data with derivatives
     geo <- transfer$geo()
-    deriv <- deriv$arranged_table
+    deriv_arr <- deriv$arranged_table
 
     data <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
-      deriv = deriv
+      deriv = deriv_arr
     )
 
 
