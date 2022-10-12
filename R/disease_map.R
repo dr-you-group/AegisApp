@@ -124,16 +124,16 @@ disease_map_server <- function(input, output, session, transfer) {
     color_type <- input$map_color_type
     color_param <- base::list(
       palette = input$map_palette,
-      domain = input$map_domain,
+      domain = if(trimws(input$map_domain) == ""){NULL},
       bins = as.numeric(input$map_bins),
-      pretty = input$map_pretty,
+      pretty = as.logical(input$map_pretty),
       n = as.numeric(input$map_n),
-      levels = input$map_levels,
-      ordered = input$map_ordered,
-      na.color = input$map_na_color,
-      alpha = input$map_alpha,
-      reverse = input$map_reverse,
-      right = input$map_right
+      levels = if(trimws(input$map_levels) == ""){NULL},
+      ordered = as.logical(input$map_ordered),
+      na.color = if(trimws(input$map_na_color) == ""){"#808080"},
+      alpha = as.logical(input$map_alpha),
+      reverse = as.logical(input$map_reverse),
+      right = as.logical(input$map_right)
     )
 
     plot <- get_leaflet_map(
