@@ -3,6 +3,14 @@ library(shinyjs)
 library(leaflet)
 library(AegisFunc)
 
+#' Title
+#'
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 AegisApp <- function(...) {
   ui <- navbarPage(
     useShinyjs(),
