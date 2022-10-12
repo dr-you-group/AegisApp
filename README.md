@@ -41,7 +41,8 @@ AegisApp()
 ```
 
 Launch AegisApp with sample data.  
-- cdm source - cohort list - cohort table
+- The sample data consist of 1) cdm source, 2) cohort list, 3) cohort
+table.
 
 ``` r
 runApp(
