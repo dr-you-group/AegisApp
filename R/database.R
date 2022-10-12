@@ -47,26 +47,36 @@ database_server <- function(input, output, session, transfer) {
     disable("get_cdm_source")
     show("work_cdm_source")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    query <- parseQueryString(session$clientData$url_search)
+    message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+    if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
+      data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
+      load(data_file)
+      message("data file: ", toString(data_file))
 
+      cdm_source
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    # Get cdm source
-    conn_info <- conn_info
-    cdm_database_schema <- input$cdm_database_schema
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
-    cdm_source <- get_cdm_source(
-      conn_info = conn_info,
-      cdm_database_schema = cdm_database_schema
-    )
+      # Get cdm source
+      conn_info <- conn_info
+      cdm_database_schema <- input$cdm_database_schema
+
+      cdm_source <- get_cdm_source(
+        conn_info = conn_info,
+        cdm_database_schema = cdm_database_schema
+      )
+    }
 
     hide("work_cdm_source")
     enable("get_cdm_source")
@@ -83,26 +93,36 @@ database_server <- function(input, output, session, transfer) {
     disable("get_cohort_list")
     show("work_cohort_list")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    query <- parseQueryString(session$clientData$url_search)
+    message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+    if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
+      data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
+      load(data_file)
+      message("data file: ", toString(data_file))
 
+      cohort_list
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    # Get cohort list
-    conn_info <- conn_info
-    result_database_schema <- input$result_database_schema
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
-    cohort_list <- get_cohort_list_table(
-      conn_info = conn_info,
-      result_database_schema = result_database_schema
-    )
+      # Get cohort list
+      conn_info <- conn_info
+      result_database_schema <- input$result_database_schema
+
+      cohort_list <- get_cohort_list_table(
+        conn_info = conn_info,
+        result_database_schema = result_database_schema
+      )
+    }
 
     hide("work_cohort_list")
     enable("get_cohort_list")

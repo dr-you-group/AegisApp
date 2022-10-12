@@ -28,12 +28,9 @@ AegisApp <- function(...) {
   server <- function(input, output, session) {
     # observe({
     #   query <- parseQueryString(session$clientData$url_search)
-    #   message("query: ", toString(query))
+    #   message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
     #
-    #   if (!is.null(query$demo)) {
-    #     demo <- TRUE
-    #     message("demo: ", toString(demo))
-    #
+    #   if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
     #     data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
     #     load(data_file)
     #     message("data file: ", toString(data_file))

@@ -140,42 +140,52 @@ cohort_server <- function(input, output, session, transfer) {
     disable("get_cohort_table")
     show("work_cohort_table")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    query <- parseQueryString(session$clientData$url_search)
+    message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+    if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
+      data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
+      load(data_file)
+      message("data file: ", toString(data_file))
 
+      cohort_table
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    # Get cohort table
-    conn_info <- conn_info
-    cdm_database_schema <- input$cdm_database_schema
-    result_database_schema <- input$result_database_schema
-    target_cohort_definition_id <- input$target_cohort_definition_id
-    outcome_cohort_definition_id <- input$outcome_cohort_definition_id
-    cohort_start_date <- input$cohort_start_date
-    cohort_end_date <- input$cohort_end_date
-    time_at_risk_start_date <- input$time_at_risk_start_date
-    time_at_risk_end_date <- input$time_at_risk_end_date
-    time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
-    cohort_table <- get_cohort_analysis_table(
-      conn_info = conn_info,
-      cdm_database_schema = cdm_database_schema,
-      result_database_schema = result_database_schema,
-      target_cohort_definition_id = target_cohort_definition_id,
-      outcome_cohort_definition_id = outcome_cohort_definition_id,
-      cohort_start_date = cohort_start_date,
-      cohort_end_date = cohort_end_date,
-      time_at_risk_start_date = time_at_risk_start_date,
-      time_at_risk_end_date = time_at_risk_end_date,
-      time_at_risk_end_date_panel = time_at_risk_end_date_panel
-    )
+      # Get cohort table
+      conn_info <- conn_info
+      cdm_database_schema <- input$cdm_database_schema
+      result_database_schema <- input$result_database_schema
+      target_cohort_definition_id <- input$target_cohort_definition_id
+      outcome_cohort_definition_id <- input$outcome_cohort_definition_id
+      cohort_start_date <- input$cohort_start_date
+      cohort_end_date <- input$cohort_end_date
+      time_at_risk_start_date <- input$time_at_risk_start_date
+      time_at_risk_end_date <- input$time_at_risk_end_date
+      time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
+
+      cohort_table <- get_cohort_analysis_table(
+        conn_info = conn_info,
+        cdm_database_schema = cdm_database_schema,
+        result_database_schema = result_database_schema,
+        target_cohort_definition_id = target_cohort_definition_id,
+        outcome_cohort_definition_id = outcome_cohort_definition_id,
+        cohort_start_date = cohort_start_date,
+        cohort_end_date = cohort_end_date,
+        time_at_risk_start_date = time_at_risk_start_date,
+        time_at_risk_end_date = time_at_risk_end_date,
+        time_at_risk_end_date_panel = time_at_risk_end_date_panel
+      )
+    }
 
     hide("work_cohort_table")
     enable("get_cohort_table")
