@@ -58,7 +58,7 @@ Launch AegisApp with sample data.
 - The sample data consist of 1) cdm source, 2) cohort list, 3) cohort table.  
 
 ``` r
-runApp(
+shiny::runApp(
   appDir = AegisApp(),
   port = 8888,
   launch.browser = function(appUrl) {

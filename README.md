@@ -45,7 +45,7 @@ Launch AegisApp with sample data.
 table.
 
 ``` r
-runApp(
+shiny::runApp(
   appDir = AegisApp(),
   port = 8888,
   launch.browser = function(appUrl) {
