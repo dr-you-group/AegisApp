@@ -30,8 +30,8 @@ AegisApp <- function(demo = FALSE, ...) {
       load(file.path(getwd(), "data", "aegis_sample.Rdata"))
     }
 
-    database <- database_server(input, output, session)
-    cohort <- cohort_server(input, output, session, database)
+    database <- database_server(input, output, session, NULL, demo)
+    cohort <- cohort_server(input, output, session, database, demo)
     disease_map_server(input, output, session, cohort)
     disease_cluster_server(input, output, session, cohort)
   }
