@@ -3,7 +3,7 @@ library(shinyjs)
 library(leaflet)
 library(AegisFunc)
 
-AegisApp <- function(demo = FALSE, ...) {
+AegisApp <- function(...) {
   ui <- navbarPage(
     useShinyjs(),
     title = "AegisApp",
@@ -25,13 +25,23 @@ AegisApp <- function(demo = FALSE, ...) {
     )
   )
 
-  server <- function(input, output, session, demo) {
-    if (demo) {
-      load(file.path(getwd(), "data", "aegis_sample.Rdata"))
-    }
+  server <- function(input, output, session) {
+    # observe({
+    #   query <- parseQueryString(session$clientData$url_search)
+    #   message("query: ", toString(query))
+    #
+    #   if (!is.null(query$demo)) {
+    #     demo <- TRUE
+    #     message("demo: ", toString(demo))
+    #
+    #     data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
+    #     load(data_file)
+    #     message("data file: ", toString(data_file))
+    #   }
+    # })
 
-    database <- database_server(input, output, session, NULL, demo)
-    cohort <- cohort_server(input, output, session, database, demo)
+    database <- database_server(input, output, session, NULL)
+    cohort <- cohort_server(input, output, session, database)
     disease_map_server(input, output, session, cohort)
     disease_cluster_server(input, output, session, cohort)
   }
