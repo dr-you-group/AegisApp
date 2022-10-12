@@ -51,11 +51,7 @@ database_server <- function(input, output, session, transfer) {
     message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
     if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
-      data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
-      load(data_file)
-      message("data file: ", toString(data_file))
-
-      cdm_source
+      cdm_source <- AegisApp::cdm_source
     } else {
       # Get connection details
       dbms <- input$dbms
@@ -97,11 +93,7 @@ database_server <- function(input, output, session, transfer) {
     message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
     if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
-      data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
-      load(data_file)
-      message("data file: ", toString(data_file))
-
-      cohort_list
+      cohort_list <- AegisApp::cohort_list
     } else {
       # Get connection details
       dbms <- input$dbms
