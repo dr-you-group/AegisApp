@@ -39,3 +39,18 @@ Run AegisApp to launch application.
 ``` r
 AegisApp()
 ```
+
+Launch AegisApp with sample data.  
+- cdm source - cohort list - cohort table
+
+``` r
+runApp(
+  appDir = AegisApp(),
+  port = 8888,
+  launch.browser = function(appUrl) {
+    url <- paste0(appUrl, "/?demo=TRUE")
+    utils::browseURL(url)
+  },
+  host = "0.0.0.0"
+)
+```
