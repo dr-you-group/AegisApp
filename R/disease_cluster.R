@@ -113,17 +113,17 @@ disease_cluster_server <- function(input, output, session, transfer) {
     stats <- deriv$stats
     color_type <- input$cluster_color_type
     color_param <- base::list(
-      palette <- input$cluster_palette,
-      domain <- input$cluster_domain,
-      bins <- as.numeric(input$cluster_bins),
-      pretty <- input$cluster_pretty,
-      n <- as.numeric(input$cluster_n),
-      levels <- input$cluster_levels,
-      ordered <- input$cluster_ordered,
-      na.color <- input$cluster_na_color,
-      alpha <- input$cluster_alpha,
-      reverse <- input$cluster_reverse,
-      right <- input$cluster_right,
+      palette = input$cluster_palette,
+      domain = input$cluster_domain,
+      bins = as.numeric(input$cluster_bins),
+      pretty = input$cluster_pretty,
+      n = as.numeric(input$cluster_n),
+      levels = input$cluster_levels,
+      ordered = input$cluster_ordered,
+      na.color = input$cluster_na_color,
+      alpha = input$cluster_alpha,
+      reverse = input$cluster_reverse,
+      right = input$cluster_right
     )
 
     plot <- get_leaflet_map(
