@@ -1,8 +1,3 @@
-library(shiny)
-library(shinyjs)
-library(leaflet)
-library(AegisFunc)
-
 #' Title
 #'
 #' @param ...
@@ -12,22 +7,22 @@ library(AegisFunc)
 #'
 #' @examples
 AegisApp <- function(...) {
-  ui <- navbarPage(
-    useShinyjs(),
+  ui <- shiny::navbarPage(
+    shinyjs::useShinyjs(),
     title = "AegisApp",
-    tabPanel(
+    shiny::tabPanel(
       title = "Set database",
       database_ui
     ),
-    tabPanel(
+    shiny::tabPanel(
       title = "Get data for analysis",
       cohort_ui
     ),
-    tabPanel(
+    shiny::tabPanel(
       title = "Disease Map",
       disease_map_ui
     ),
-    tabPanel(
+    shiny::tabPanel(
       title = "Disease Cluster",
       disease_cluster_ui
     )
@@ -51,5 +46,5 @@ AegisApp <- function(...) {
     disease_cluster_server(input, output, session, cohort)
   }
 
-  shinyApp(ui, server, ...)
+  shiny::shinyApp(ui, server, ...)
 }

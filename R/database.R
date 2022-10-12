@@ -1,38 +1,38 @@
-database_ui <- fluidPage(
-  titlePanel(
+database_ui <- shiny::fluidPage(
+  shiny::titlePanel(
     # app title/description
     "Connect to your database"
   ),
-  sidebarLayout(
-    sidebarPanel(
+  shiny::sidebarLayout(
+    shiny::sidebarPanel(
       # inputs
-      selectInput("dbms", "Database dialect", choices = c("sql server")),
-      textInput("path_to_driver", "JDBC path", value = getwd()),
-      textInput("connection_string", "Database connection string", value = "jdbc:sqlserver://IP:PORT;user=ID;password=PW"),
-      textInput("cdm_database_schema", "CDM Database schema", value = "DB.SCHEMA"),
-      textInput("result_database_schema", "Results Database schema", value = "DB.SCHEMA"),
-      verticalLayout(
-        actionButton("print_db", "Print"),
-        actionButton("get_cdm_source", "Get cdm source"),
-        actionButton("get_cohort_list", "Get cohort list")
+      shiny::selectInput("dbms", "Database dialect", choices = c("sql server")),
+      shiny::textInput("path_to_driver", "JDBC path", value = getwd()),
+      shiny::textInput("connection_string", "Database connection string", value = "jdbc:sqlserver://IP:PORT;user=ID;password=PW"),
+      shiny::textInput("cdm_database_schema", "CDM Database schema", value = "DB.SCHEMA"),
+      shiny::textInput("result_database_schema", "Results Database schema", value = "DB.SCHEMA"),
+      shiny::verticalLayout(
+        shiny::actionButton("print_db", "Print"),
+        shiny::actionButton("get_cdm_source", "Get cdm source"),
+        shiny::actionButton("get_cohort_list", "Get cohort list")
       )
     ),
-    mainPanel(
+    shiny::mainPanel(
       # outputs
-      dataTableOutput("cdm_source"),
-      dataTableOutput("cohort_list"),
-      hidden(
-        p(id = "work_cdm_source", "Processing...")
+      shiny::dataTableOutput("cdm_source"),
+      shiny::dataTableOutput("cohort_list"),
+      shinyjs::hidden(
+        htmltools::p(id = "work_cdm_source", "Processing...")
       ),
-      hidden(
-        p(id = "work_cohort_list", "Processing...")
+      shinyjs::hidden(
+        htmltools::p(id = "work_cohort_list", "Processing...")
       )
     )
   )
 )
 
 database_server <- function(input, output, session, transfer) {
-  observeEvent(input$print_db, {
+  shiny::observeEvent(input$print_db, {
     params <- list()
     params$dbms <- input$dbms
     params$path_to_driver <- input$path_to_driver
@@ -43,11 +43,11 @@ database_server <- function(input, output, session, transfer) {
     message("db_params: ", toString(params))
   })
 
-  cdm_source <- eventReactive(input$get_cdm_source, {
-    disable("get_cdm_source")
-    show("work_cdm_source")
+  cdm_source <- shiny::eventReactive(input$get_cdm_source, {
+    shinyjs::disable("get_cdm_source")
+    shinyjs::show("work_cdm_source")
 
-    query <- parseQueryString(session$clientData$url_search)
+    query <- shiny::parseQueryString(session$clientData$url_search)
     message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
     if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
@@ -58,7 +58,7 @@ database_server <- function(input, output, session, transfer) {
       path_to_driver <- input$path_to_driver
       connection_string <- input$connection_string
 
-      conn_info <- get_connection_details(
+      conn_info <- AegisFunc::get_connection_details(
         dbms = dbms,
         path_to_driver = path_to_driver,
         connection_string = connection_string
@@ -68,28 +68,28 @@ database_server <- function(input, output, session, transfer) {
       conn_info <- conn_info
       cdm_database_schema <- input$cdm_database_schema
 
-      cdm_source <- get_cdm_source(
+      cdm_source <- AegisFunc::get_cdm_source(
         conn_info = conn_info,
         cdm_database_schema = cdm_database_schema
       )
     }
 
-    hide("work_cdm_source")
-    enable("get_cdm_source")
+    shinyjs::hide("work_cdm_source")
+    shinyjs::enable("get_cdm_source")
 
     cdm_source
   })
 
-  output$cdm_source <- renderDataTable(
+  output$cdm_source <- shiny::renderDataTable(
     cdm_source(),
     options = list(pageLength = 5)
   )
 
-  cohort_list <- eventReactive(input$get_cohort_list, {
-    disable("get_cohort_list")
-    show("work_cohort_list")
+  cohort_list <- shiny::eventReactive(input$get_cohort_list, {
+    shinyjs::disable("get_cohort_list")
+    shinyjs::show("work_cohort_list")
 
-    query <- parseQueryString(session$clientData$url_search)
+    query <- shiny::parseQueryString(session$clientData$url_search)
     message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
     if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
@@ -100,7 +100,7 @@ database_server <- function(input, output, session, transfer) {
       path_to_driver <- input$path_to_driver
       connection_string <- input$connection_string
 
-      conn_info <- get_connection_details(
+      conn_info <- AegisFunc::get_connection_details(
         dbms = dbms,
         path_to_driver = path_to_driver,
         connection_string = connection_string
@@ -110,24 +110,24 @@ database_server <- function(input, output, session, transfer) {
       conn_info <- conn_info
       result_database_schema <- input$result_database_schema
 
-      cohort_list <- get_cohort_list_table(
+      cohort_list <- AegisFunc::get_cohort_list_table(
         conn_info = conn_info,
         result_database_schema = result_database_schema
       )
     }
 
-    hide("work_cohort_list")
-    enable("get_cohort_list")
+    shinyjs::hide("work_cohort_list")
+    shinyjs::enable("get_cohort_list")
 
     cohort_list
   })
 
-  output$cohort_list <- renderDataTable(
+  output$cohort_list <- shiny::renderDataTable(
     cohort_list(),
     options = list(pageLength = 5)
   )
 
   list(
-    cohort_ids = reactive(cohort_list()$id)
+    cohort_ids = shiny::reactive(cohort_list()$id)
   )
 }

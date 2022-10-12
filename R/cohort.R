@@ -1,74 +1,74 @@
-cohort_tab <- tabsetPanel(
+cohort_tab <- shiny::tabsetPanel(
   id = "cohort_tab",
   type = "tabs",
-  tabPanel(
+  shiny::tabPanel(
     title = "Get cohort table",
-    sidebarLayout(
-      sidebarPanel(
+    shiny::sidebarLayout(
+      shiny::sidebarPanel(
         # inputs
-        selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c()),
-        selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c()),
-        dateInput("cohort_start_date", "Cohort start date", value = "2020-01-01"),
-        dateInput("cohort_end_date", "Cohort end date", value = "2020-12-31"),
-        textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
-        textInput("time_at_risk_end_date", "Time at risk end date", value = "0"),
-        selectInput("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
-        actionButton("print_cohort_table", "Print"),
-        actionButton("get_cohort_table", "Get cohort table")
+        shiny::selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c()),
+        shiny::selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c()),
+        shiny::dateInput("cohort_start_date", "Cohort start date", value = "2020-01-01"),
+        shiny::dateInput("cohort_end_date", "Cohort end date", value = "2020-12-31"),
+        shiny::textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
+        shiny::textInput("time_at_risk_end_date", "Time at risk end date", value = "0"),
+        shiny::selectInput("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
+        shiny::actionButton("print_cohort_table", "Print"),
+        shiny::actionButton("get_cohort_table", "Get cohort table")
       ),
-      mainPanel(
+      shiny::mainPanel(
         # outputs
-        dataTableOutput("cohort_table"),
-        hidden(
-          p(id = "work_cohort_table", "Processing...")
+        shiny::dataTableOutput("cohort_table"),
+        shinyjs::hidden(
+          htmltools::p(id = "work_cohort_table", "Processing...")
         )
       )
     )
   ),
-  tabPanel(
+  shiny::tabPanel(
     title = "Get geo data",
-    sidebarLayout(
-      sidebarPanel(
+    shiny::sidebarLayout(
+      shiny::sidebarPanel(
         # inputs
-        selectInput("name", "Source of the geo data", choices = c("KOR", "GADM")),
-        selectInput("country", "Country", choices = c("KOR")),
-        selectInput("level", "Level of the administrative data", choices = c(2:3)),
-        actionButton("print_geo", "Print"),
-        actionButton("get_geo", "Get geo data")
+        shiny::selectInput("name", "Source of the geo data", choices = c("KOR", "GADM")),
+        shiny::selectInput("country", "Country", choices = c("KOR")),
+        shiny::selectInput("level", "Level of the administrative data", choices = c(2:3)),
+        shiny::actionButton("print_geo", "Print"),
+        shiny::actionButton("get_geo", "Get geo data")
       ),
-      mainPanel(
+      shiny::mainPanel(
         # outputs
-        dataTableOutput("geo"),
-        hidden(
-          p(id = "work_geo", "Processing...")
+        shiny::dataTableOutput("geo"),
+        shinyjs::hidden(
+          htmltools::p(id = "work_geo", "Processing...")
         )
       )
     )
   ),
-  tabPanel(
+  shiny::tabPanel(
     title = "Get adjustmented table",
-    sidebarLayout(
-      sidebarPanel(
+    shiny::sidebarLayout(
+      shiny::sidebarPanel(
         # inputs
-        selectInput("mode", "Adjustment mode", choices = c("std", "crd")),
-        selectInput("fraction", "Fraction", choices = c("100000")),
-        selectInput("conf_level", "Confidence level", choices = c("0.95")),
-        actionButton("print_table_adj", "Print"),
-        actionButton("get_table_adj", "Get adjustmented table")
+        shiny::selectInput("mode", "Adjustment mode", choices = c("std", "crd")),
+        shiny::selectInput("fraction", "Fraction", choices = c("100000")),
+        shiny::selectInput("conf_level", "Confidence level", choices = c("0.95")),
+        shiny::actionButton("print_table_adj", "Print"),
+        shiny::actionButton("get_table_adj", "Get adjustmented table")
       ),
-      mainPanel(
+      shiny::mainPanel(
         # outputs
-        dataTableOutput("table_adj"),
-        hidden(
-          p(id = "work_table_adj", "Processing...")
+        shiny::dataTableOutput("table_adj"),
+        shinyjs::hidden(
+          htmltools::p(id = "work_table_adj", "Processing...")
         )
       )
     )
   )
 )
 
-cohort_ui <- fluidPage(
-  titlePanel(
+cohort_ui <- shiny::fluidPage(
+  shiny::titlePanel(
     # app title/description
     "Pre-processing your data"
   ),
@@ -76,7 +76,7 @@ cohort_ui <- fluidPage(
 )
 
 cohort_server <- function(input, output, session, transfer) {
-  observeEvent(input$print_cohort_table, {
+  shiny::observeEvent(input$print_cohort_table, {
     params <- list()
     params$target_cohort_definition_id <- input$target_cohort_definition_id
     params$outcome_cohort_definition_id <- input$outcome_cohort_definition_id
@@ -89,7 +89,7 @@ cohort_server <- function(input, output, session, transfer) {
     message("cohort_params: ", toString(params))
   })
 
-  observeEvent(input$print_geo, {
+  shiny::observeEvent(input$print_geo, {
     params <- list()
     params$name <- input$name
     params$country <- input$country
@@ -98,7 +98,7 @@ cohort_server <- function(input, output, session, transfer) {
     message("geo_params: ", toString(params))
   })
 
-  observeEvent(input$print_table_adj, {
+  shiny::observeEvent(input$print_table_adj, {
     params <- list()
     params$mode <- input$mode
     params$fraction <- input$fraction
@@ -107,40 +107,40 @@ cohort_server <- function(input, output, session, transfer) {
     message("adj_params: ", toString(params))
   })
 
-  observe({
-    disable("get_cohort_table")
+  shiny::observe({
+    shinyjs::disable("get_cohort_table")
 
     if (length(transfer$cohort_ids()) > 0) {
-      enable("get_cohort_table")
+      shinyjs::enable("get_cohort_table")
     }
   })
 
-  observe({
-    disable("get_table_adj")
+  shiny::observe({
+    shinyjs::disable("get_table_adj")
 
     if (length(cohort_table()) > 0 & length(geo()@data) > 0) {
-      enable("get_table_adj")
+      shinyjs::enable("get_table_adj")
     }
   })
 
-  observe({
-    updateSelectInput(
+  shiny::observe({
+    shiny::updateSelectInput(
       session,
       "target_cohort_definition_id",
       choices = transfer$cohort_ids()
     )
-    updateSelectInput(
+    shiny::updateSelectInput(
       session,
       "outcome_cohort_definition_id",
       choices = transfer$cohort_ids()
     )
   })
 
-  cohort_table <- eventReactive(input$get_cohort_table, {
-    disable("get_cohort_table")
-    show("work_cohort_table")
+  cohort_table <- shiny::eventReactive(input$get_cohort_table, {
+    shinyjs::disable("get_cohort_table")
+    shinyjs::show("work_cohort_table")
 
-    query <- parseQueryString(session$clientData$url_search)
+    query <- shiny::parseQueryString(session$clientData$url_search)
     message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
 
     if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
@@ -151,7 +151,7 @@ cohort_server <- function(input, output, session, transfer) {
       path_to_driver <- input$path_to_driver
       connection_string <- input$connection_string
 
-      conn_info <- get_connection_details(
+      conn_info <- AegisFunc::get_connection_details(
         dbms = dbms,
         path_to_driver = path_to_driver,
         connection_string = connection_string
@@ -169,7 +169,7 @@ cohort_server <- function(input, output, session, transfer) {
       time_at_risk_end_date <- input$time_at_risk_end_date
       time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
 
-      cohort_table <- get_cohort_analysis_table(
+      cohort_table <- AegisFunc::get_cohort_analysis_table(
         conn_info = conn_info,
         cdm_database_schema = cdm_database_schema,
         result_database_schema = result_database_schema,
@@ -183,52 +183,52 @@ cohort_server <- function(input, output, session, transfer) {
       )
     }
 
-    hide("work_cohort_table")
-    enable("get_cohort_table")
+    shinyjs::hide("work_cohort_table")
+    shinyjs::enable("get_cohort_table")
 
     cohort_table
   })
 
-  output$cohort_table <- renderDataTable(
+  output$cohort_table <- shiny::renderDataTable(
     cohort_table(),
     options = list(pageLength = 5)
   )
 
-  geo <- eventReactive(input$get_geo, {
-    disable("get_geo")
-    show("work_geo")
+  geo <- shiny::eventReactive(input$get_geo, {
+    shinyjs::disable("get_geo")
+    shinyjs::show("work_geo")
 
     # Get geo data
     name <- input$name
     country <- input$country
     level <- input$level
 
-    geo <- get_geo_data(
+    geo <- AegisFunc::get_geo_data(
       name = name,
       country = country,
       level = level
     )
 
-    hide("work_geo")
-    enable("get_geo")
+    shinyjs::hide("work_geo")
+    shinyjs::enable("get_geo")
 
     geo
   })
 
-  output$geo <- renderDataTable(
+  output$geo <- shiny::renderDataTable(
     geo()@data,
     options = list(pageLength = 5)
   )
 
-  table_adj <- eventReactive(input$get_table_adj, {
-    disable("get_table_adj")
-    show("work_table_adj")
+  table_adj <- shiny::eventReactive(input$get_table_adj, {
+    shinyjs::disable("get_table_adj")
+    shinyjs::show("work_table_adj")
 
     # Map cohort table with geo data
     latlong <- cohort_table()
     geo <- geo()
 
-    geo_map <- map_latlong_geo(
+    geo_map <- AegisFunc::map_latlong_geo(
       latlong = latlong,
       geo = geo
     )
@@ -237,7 +237,7 @@ cohort_server <- function(input, output, session, transfer) {
     # Arrange table
     table <- geo_map
 
-    table_arr <- calculate_count_with_geo_oid(
+    table_arr <- AegisFunc::calculate_count_with_geo_oid(
       table = table
     )
 
@@ -248,26 +248,26 @@ cohort_server <- function(input, output, session, transfer) {
     fraction <- input$fraction
     conf_level <- input$conf_level
 
-    table_adj <- calculate_adjust_age_sex_indirectly(
+    table_adj <- AegisFunc::calculate_adjust_age_sex_indirectly(
       table = table,
       mode = mode,
       fraction = fraction,
       conf_level = conf_level
     )
 
-    hide("work_table_adj")
-    enable("get_table_adj")
+    shinyjs::hide("work_table_adj")
+    shinyjs::enable("get_table_adj")
 
     table_adj
   })
 
-  output$table_adj <- renderDataTable(
+  output$table_adj <- shiny::renderDataTable(
     table_adj(),
     options = list(pageLength = 5)
   )
 
   list(
-    geo = reactive(geo()),
-    table_adj = reactive(table_adj())
+    geo = shiny::reactive(geo()),
+    table_adj = shiny::reactive(table_adj())
   )
 }

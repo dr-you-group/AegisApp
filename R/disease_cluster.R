@@ -1,66 +1,66 @@
-disease_cluster_ui <- fluidPage(
-  titlePanel(
+disease_cluster_ui <- shiny::fluidPage(
+  shiny::titlePanel(
     # app title/description
     "Plot disease cluster"
   ),
-  sidebarLayout(
-    sidebarPanel(
+  shiny::sidebarLayout(
+    shiny::sidebarPanel(
       # inputs
-      selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
-      conditionalPanel(
+      shiny::selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      shiny::conditionalPanel(
         condition = "input.cluster_color_type == 'colorQuantile'",
-        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("cluster_domain", "Domain", value = ""),
-        numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
-        textInput("cluster_na_color", "NA color", value = "#808080"),
-        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("cluster_domain", "Domain", value = ""),
+        shiny::numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
+        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.cluster_color_type == 'colorBin'",
-        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("cluster_domain", "Domain", value = ""),
-        numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
-        selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        textInput("cluster_na_color", "NA color", value = "#808080"),
-        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("cluster_domain", "Domain", value = ""),
+        shiny::numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
+        shiny::selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
+        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.cluster_color_type == 'colorNumeric'",
-        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("cluster_domain", "Domain", value = ""),
-        textInput("cluster_na_color", "NA color", value = "#808080"),
-        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("cluster_domain", "Domain", value = ""),
+        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.cluster_color_type == 'colorFactor'",
-        selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("cluster_domain", "Domain", value = ""),
-        textInput("cluster_levels", "Levels", value = ""),
-        selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        textInput("cluster_na_color", "NA color", value = "#808080"),
-        selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("cluster_domain", "Domain", value = ""),
+        shiny::textInput("cluster_levels", "Levels", value = ""),
+        shiny::selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      actionButton("print_disease_cluster", "Print"),
-      actionButton("plot_disease_cluster", "Plot disease cluster")
+      shiny::actionButton("print_disease_cluster", "Print"),
+      shiny::actionButton("plot_disease_cluster", "Plot disease cluster")
     ),
-    mainPanel(
+    shiny::mainPanel(
       # outputs
-      leafletOutput("disease_cluster", width = "400px"),
-      hidden(
-        p(id = "work_disease_cluster", "Processing...")
+      leaflet::leafletOutput("disease_cluster", width = "400px"),
+      shinyjs::hidden(
+        htmltools::p(id = "work_disease_cluster", "Processing...")
       )
     )
   )
 )
 
 disease_cluster_server <- function(input, output, session, transfer) {
-  observeEvent(input$print_disease_cluster, {
+  shiny::observeEvent(input$print_disease_cluster, {
     params <- list()
     params$color_type <- input$cluster_color_type
     params$palette <- input$cluster_palette
@@ -78,22 +78,22 @@ disease_cluster_server <- function(input, output, session, transfer) {
     message("disease_cluster_params: ", toString(params))
   })
 
-  observe({
-    disable("plot_disease_cluster")
+  shiny::observe({
+    shinyjs::disable("plot_disease_cluster")
 
     if (length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
-      enable("plot_disease_cluster")
+      shinyjs::enable("plot_disease_cluster")
     }
   })
 
-  disease_cluster <- eventReactive(input$plot_disease_cluster, {
-    disable("plot_disease_cluster")
-    show("work_disease_cluster")
+  disease_cluster <- shiny::eventReactive(input$plot_disease_cluster, {
+    shinyjs::disable("plot_disease_cluster")
+    shinyjs::show("work_disease_cluster")
 
     # Calculate disease cluster
     table <- transfer$table_adj()
 
-    deriv <- calculate_disease_cluster(
+    deriv <- AegisFunc::calculate_disease_cluster(
       table = table
     )
 
@@ -102,7 +102,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
     geo <- transfer$geo()
     deriv <- deriv$arranged_table
 
-    data <- merge_geo_with_deriv(
+    data <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
       deriv = deriv
     )
@@ -126,20 +126,20 @@ disease_cluster_server <- function(input, output, session, transfer) {
       right = as.logical(input$cluster_right)
     )
 
-    plot <- get_leaflet_map(
+    plot <- AegisFunc::get_leaflet_map(
       data = data,
       stats = stats,
       color_type = color_type,
       color_param = color_param
     )
 
-    hide("work_disease_cluster")
-    enable("plot_disease_cluster")
+    shinyjs::hide("work_disease_cluster")
+    shinyjs::enable("plot_disease_cluster")
 
     plot
   })
 
-  output$disease_cluster <- renderLeaflet(
+  output$disease_cluster <- leaflet::renderLeaflet(
     disease_cluster()
   )
 }

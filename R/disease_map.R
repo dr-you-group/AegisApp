@@ -1,66 +1,66 @@
-disease_map_ui <- fluidPage(
-  titlePanel(
+disease_map_ui <- shiny::fluidPage(
+  shiny::titlePanel(
     # app title/description
     "Plot disease map"
   ),
-  sidebarLayout(
-    sidebarPanel(
+  shiny::sidebarLayout(
+    shiny::sidebarPanel(
       # inputs
-      selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
-      conditionalPanel(
+      shiny::selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      shiny::conditionalPanel(
         condition = "input.map_color_type == 'colorQuantile'",
-        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("map_domain", "Domain", value = ""),
-        numericInput("map_n", "n", value = 9, min = 1, max = 9),
-        textInput("map_na_color", "NA color", value = "#808080"),
-        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("map_domain", "Domain", value = ""),
+        shiny::numericInput("map_n", "n", value = 9, min = 1, max = 9),
+        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.map_color_type == 'colorBin'",
-        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("map_domain", "Domain", value = ""),
-        numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
-        selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        textInput("map_na_color", "NA color", value = "#808080"),
-        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("map_domain", "Domain", value = ""),
+        shiny::numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
+        shiny::selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
+        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.map_color_type == 'colorNumeric'",
-        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("map_domain", "Domain", value = ""),
-        textInput("map_na_color", "NA color", value = "#808080"),
-        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("map_domain", "Domain", value = ""),
+        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      conditionalPanel(
+      shiny::conditionalPanel(
         condition = "input.map_color_type == 'colorFactor'",
-        selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        textInput("map_domain", "Domain", value = ""),
-        textInput("map_levels", "Levels", value = ""),
-        selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        textInput("map_na_color", "NA color", value = "#808080"),
-        selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+        shiny::textInput("map_domain", "Domain", value = ""),
+        shiny::textInput("map_levels", "Levels", value = ""),
+        shiny::selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-      actionButton("print_disease_map", "Print"),
-      actionButton("plot_disease_map", "Plot disease map")
+      shiny::actionButton("print_disease_map", "Print"),
+      shiny::actionButton("plot_disease_map", "Plot disease map")
     ),
-    mainPanel(
+    shiny::mainPanel(
       # outputs
-      leafletOutput("disease_map", width = "400px"),
-      hidden(
-        p(id = "work_disease_map", "Processing...")
+      leaflet::leafletOutput("disease_map", width = "400px"),
+      shinyjs::hidden(
+        htmltools::p(id = "work_disease_map", "Processing...")
       )
     )
   )
 )
 
 disease_map_server <- function(input, output, session, transfer) {
-  observeEvent(input$print_disease_map, {
+  shiny::observeEvent(input$print_disease_map, {
     params <- list()
     params$color_type <- input$map_color_type
     params$palette <- input$map_palette
@@ -78,22 +78,22 @@ disease_map_server <- function(input, output, session, transfer) {
     message("disease_map_params: ", toString(params))
   })
 
-  observe({
-    disable("plot_disease_map")
+  shiny::observe({
+    shinyjs::disable("plot_disease_map")
 
     if (length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
-      enable("plot_disease_map")
+      shinyjs::enable("plot_disease_map")
     }
   })
 
-  disease_map <- eventReactive(input$plot_disease_map, {
-    disable("plot_disease_map")
-    show("work_disease_map")
+  disease_map <- shiny::eventReactive(input$plot_disease_map, {
+    shinyjs::disable("plot_disease_map")
+    shinyjs::show("work_disease_map")
 
     # Generate graph file
     geo <- transfer$geo()
 
-    graph_file_path <- trans_geo_to_graph(
+    graph_file_path <- AegisFunc::trans_geo_to_graph(
       geo = geo
     )
 
@@ -102,7 +102,7 @@ disease_map_server <- function(input, output, session, transfer) {
     table <- transfer$table_adj()
     graph_file_path <- graph_file_path
 
-    deriv <- calculate_disease_map(
+    deriv <- AegisFunc::calculate_disease_map(
       table = table,
       graph_file_path = graph_file_path
     )
@@ -112,7 +112,7 @@ disease_map_server <- function(input, output, session, transfer) {
     geo <- transfer$geo()
     deriv <- deriv$arranged_table
 
-    data <- merge_geo_with_deriv(
+    data <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
       deriv = deriv
     )
@@ -136,20 +136,20 @@ disease_map_server <- function(input, output, session, transfer) {
       right = as.logical(input$map_right)
     )
 
-    plot <- get_leaflet_map(
+    plot <- AegisFunc::get_leaflet_map(
       data = data,
       stats = stats,
       color_type = color_type,
       color_param = color_param
     )
 
-    hide("work_disease_map")
-    enable("plot_disease_map")
+    shinyjs::hide("work_disease_map")
+    shinyjs::enable("plot_disease_map")
 
     plot
   })
 
-  output$disease_map <- renderLeaflet(
+  output$disease_map <- leaflet::renderLeaflet(
     disease_map()
   )
 }
