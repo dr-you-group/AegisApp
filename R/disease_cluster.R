@@ -9,7 +9,6 @@ disease_cluster_ui <- fluidPage(
       selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
       conditionalPanel(
         condition = "input.cluster_color_type == 'colorQuantile'",
-
         selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         textInput("cluster_domain", "Domain", value = ""),
         numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
@@ -20,7 +19,6 @@ disease_cluster_ui <- fluidPage(
       ),
       conditionalPanel(
         condition = "input.cluster_color_type == 'colorBin'",
-
         selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         textInput("cluster_domain", "Domain", value = ""),
         numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
@@ -32,7 +30,6 @@ disease_cluster_ui <- fluidPage(
       ),
       conditionalPanel(
         condition = "input.cluster_color_type == 'colorNumeric'",
-
         selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         textInput("cluster_domain", "Domain", value = ""),
         textInput("cluster_na_color", "NA color", value = "#808080"),
@@ -41,7 +38,6 @@ disease_cluster_ui <- fluidPage(
       ),
       conditionalPanel(
         condition = "input.cluster_color_type == 'colorFactor'",
-
         selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         textInput("cluster_domain", "Domain", value = ""),
         textInput("cluster_levels", "Levels", value = ""),
@@ -50,7 +46,6 @@ disease_cluster_ui <- fluidPage(
         selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
-
       actionButton("print_disease_cluster", "Print"),
       actionButton("plot_disease_cluster", "Plot disease cluster")
     ),
@@ -81,13 +76,12 @@ disease_cluster_server <- function(input, output, session, transfer) {
     params$right <- input$cluster_right
 
     message("disease_cluster_params: ", toString(params))
-
   })
 
   observe({
     disable("plot_disease_cluster")
 
-    if(length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
+    if (length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
       enable("plot_disease_cluster")
     }
   })

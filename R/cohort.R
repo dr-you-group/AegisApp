@@ -1,10 +1,8 @@
 cohort_tab <- tabsetPanel(
   id = "cohort_tab",
   type = "tabs",
-
   tabPanel(
     title = "Get cohort table",
-
     sidebarLayout(
       sidebarPanel(
         # inputs
@@ -15,7 +13,6 @@ cohort_tab <- tabsetPanel(
         textInput("time_at_risk_start_date", "Time at risk start date", value = "0"),
         textInput("time_at_risk_end_date", "Time at risk end date", value = "0"),
         selectInput("time_at_risk_end_date_panel", "Time at risk end date panel", choices = c("cohort_start_date", "cohort_end_date")),
-
         actionButton("print_cohort_table", "Print"),
         actionButton("get_cohort_table", "Get cohort table")
       ),
@@ -30,14 +27,12 @@ cohort_tab <- tabsetPanel(
   ),
   tabPanel(
     title = "Get geo data",
-
     sidebarLayout(
       sidebarPanel(
         # inputs
         selectInput("name", "Source of the geo data", choices = c("KOR", "GADM")),
         selectInput("country", "Country", choices = c("KOR")),
         selectInput("level", "Level of the administrative data", choices = c(2:3)),
-
         actionButton("print_geo", "Print"),
         actionButton("get_geo", "Get geo data")
       ),
@@ -52,14 +47,12 @@ cohort_tab <- tabsetPanel(
   ),
   tabPanel(
     title = "Get adjustmented table",
-
     sidebarLayout(
       sidebarPanel(
         # inputs
         selectInput("mode", "Adjustment mode", choices = c("std", "crd")),
         selectInput("fraction", "Fraction", choices = c("100000")),
         selectInput("conf_level", "Confidence level", choices = c("0.95")),
-
         actionButton("print_table_adj", "Print"),
         actionButton("get_table_adj", "Get adjustmented table")
       ),
@@ -82,7 +75,7 @@ cohort_ui <- fluidPage(
   cohort_tab
 )
 
-cohort_server <- function(input, output, session, transfer) {
+cohort_server <- function(input, output, session, transfer, demo) {
   observeEvent(input$print_cohort_table, {
     params <- list()
     params$target_cohort_definition_id <- input$target_cohort_definition_id
@@ -94,7 +87,6 @@ cohort_server <- function(input, output, session, transfer) {
     params$time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
 
     message("cohort_params: ", toString(params))
-
   })
 
   observeEvent(input$print_geo, {
@@ -104,7 +96,6 @@ cohort_server <- function(input, output, session, transfer) {
     params$level <- input$level
 
     message("geo_params: ", toString(params))
-
   })
 
   observeEvent(input$print_table_adj, {
@@ -114,13 +105,12 @@ cohort_server <- function(input, output, session, transfer) {
     params$conf_level <- input$conf_level
 
     message("adj_params: ", toString(params))
-
   })
 
   observe({
     disable("get_cohort_table")
 
-    if(length(transfer$cohort_ids()) > 0) {
+    if (length(transfer$cohort_ids()) > 0) {
       enable("get_cohort_table")
     }
   })
@@ -128,7 +118,7 @@ cohort_server <- function(input, output, session, transfer) {
   observe({
     disable("get_table_adj")
 
-    if(length(cohort_table()) > 0 & length(geo()@data) > 0) {
+    if (length(cohort_table()) > 0 & length(geo()@data) > 0) {
       enable("get_table_adj")
     }
   })
@@ -150,42 +140,46 @@ cohort_server <- function(input, output, session, transfer) {
     disable("get_cohort_table")
     show("work_cohort_table")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    if (demo) {
+      cohort_table
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
 
-    # Get cohort table
-    conn_info <- conn_info
-    cdm_database_schema <- input$cdm_database_schema
-    result_database_schema <- input$result_database_schema
-    target_cohort_definition_id <- input$target_cohort_definition_id
-    outcome_cohort_definition_id <- input$outcome_cohort_definition_id
-    cohort_start_date <- input$cohort_start_date
-    cohort_end_date <- input$cohort_end_date
-    time_at_risk_start_date <- input$time_at_risk_start_date
-    time_at_risk_end_date <- input$time_at_risk_end_date
-    time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
+      # Get cohort table
+      conn_info <- conn_info
+      cdm_database_schema <- input$cdm_database_schema
+      result_database_schema <- input$result_database_schema
+      target_cohort_definition_id <- input$target_cohort_definition_id
+      outcome_cohort_definition_id <- input$outcome_cohort_definition_id
+      cohort_start_date <- input$cohort_start_date
+      cohort_end_date <- input$cohort_end_date
+      time_at_risk_start_date <- input$time_at_risk_start_date
+      time_at_risk_end_date <- input$time_at_risk_end_date
+      time_at_risk_end_date_panel <- input$time_at_risk_end_date_panel
 
-    cohort_table <- get_cohort_analysis_table(
-      conn_info = conn_info,
-      cdm_database_schema = cdm_database_schema,
-      result_database_schema = result_database_schema,
-      target_cohort_definition_id = target_cohort_definition_id,
-      outcome_cohort_definition_id = outcome_cohort_definition_id,
-      cohort_start_date = cohort_start_date,
-      cohort_end_date = cohort_end_date,
-      time_at_risk_start_date = time_at_risk_start_date,
-      time_at_risk_end_date = time_at_risk_end_date,
-      time_at_risk_end_date_panel = time_at_risk_end_date_panel
-    )
+      cohort_table <- get_cohort_analysis_table(
+        conn_info = conn_info,
+        cdm_database_schema = cdm_database_schema,
+        result_database_schema = result_database_schema,
+        target_cohort_definition_id = target_cohort_definition_id,
+        outcome_cohort_definition_id = outcome_cohort_definition_id,
+        cohort_start_date = cohort_start_date,
+        cohort_end_date = cohort_end_date,
+        time_at_risk_start_date = time_at_risk_start_date,
+        time_at_risk_end_date = time_at_risk_end_date,
+        time_at_risk_end_date_panel = time_at_risk_end_date_panel
+      )
+    }
 
     hide("work_cohort_table")
     enable("get_cohort_table")

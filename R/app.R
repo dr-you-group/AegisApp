@@ -3,11 +3,10 @@ library(shinyjs)
 library(leaflet)
 library(AegisFunc)
 
-AegisApp <- function(...) {
+AegisApp <- function(demo = FALSE, ...) {
   ui <- navbarPage(
     useShinyjs(),
     title = "AegisApp",
-
     tabPanel(
       title = "Set database",
       database_ui
@@ -26,7 +25,11 @@ AegisApp <- function(...) {
     )
   )
 
-  server <- function(input, output, session) {
+  server <- function(input, output, session, demo) {
+    if (demo) {
+      load(file.path(getwd(), "data", "aegis_sample.Rdata"))
+    }
+
     database <- database_server(input, output, session)
     cohort <- cohort_server(input, output, session, database)
     disease_map_server(input, output, session, cohort)

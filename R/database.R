@@ -11,7 +11,6 @@ database_ui <- fluidPage(
       textInput("connection_string", "Database connection string", value = "jdbc:sqlserver://IP:PORT;user=ID;password=PW"),
       textInput("cdm_database_schema", "CDM Database schema", value = "DB.SCHEMA"),
       textInput("result_database_schema", "Results Database schema", value = "DB.SCHEMA"),
-
       verticalLayout(
         actionButton("print_db", "Print"),
         actionButton("get_cdm_source", "Get cdm source"),
@@ -32,7 +31,7 @@ database_ui <- fluidPage(
   )
 )
 
-database_server <- function(input, output, session, transfer) {
+database_server <- function(input, output, session, transfer, demo) {
   observeEvent(input$print_db, {
     params <- list()
     params$dbms <- input$dbms
@@ -42,33 +41,36 @@ database_server <- function(input, output, session, transfer) {
     params$result_database_schema <- input$result_database_schema
 
     message("db_params: ", toString(params))
-
   })
 
   cdm_source <- eventReactive(input$get_cdm_source, {
     disable("get_cdm_source")
     show("work_cdm_source")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    if (demo) {
+      cdm_source
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
 
-    # Get cdm source
-    conn_info <- conn_info
-    cdm_database_schema <- input$cdm_database_schema
+      # Get cdm source
+      conn_info <- conn_info
+      cdm_database_schema <- input$cdm_database_schema
 
-    cdm_source <- get_cdm_source(
-      conn_info = conn_info,
-      cdm_database_schema = cdm_database_schema
-    )
+      cdm_source <- get_cdm_source(
+        conn_info = conn_info,
+        cdm_database_schema = cdm_database_schema
+      )
+    }
 
     hide("work_cdm_source")
     enable("get_cdm_source")
@@ -85,28 +87,30 @@ database_server <- function(input, output, session, transfer) {
     disable("get_cohort_list")
     show("work_cohort_list")
 
-    # Get connection details
-    dbms <- input$dbms
-    path_to_driver <- input$path_to_driver
-    connection_string <- input$connection_string
+    if (demo) {
+      cohort_list
+    } else {
+      # Get connection details
+      dbms <- input$dbms
+      path_to_driver <- input$path_to_driver
+      connection_string <- input$connection_string
 
-    conn_info <- get_connection_details(
-      dbms = dbms,
-      path_to_driver = path_to_driver,
-      connection_string = connection_string
-    )
+      conn_info <- get_connection_details(
+        dbms = dbms,
+        path_to_driver = path_to_driver,
+        connection_string = connection_string
+      )
 
 
-    # Get cohort list
-    conn_info <- conn_info
-    result_database_schema <- input$result_database_schema
+      # Get cohort list
+      conn_info <- conn_info
+      result_database_schema <- input$result_database_schema
 
-    cohort_list <- get_cohort_list_table(
-      conn_info = conn_info,
-      result_database_schema = result_database_schema
-    )
-    # cohort_list <- data.frame(id = c(1:10), n = c(11:20))
-    # message("cohort_list: ", toString(cohort_list))
+      cohort_list <- get_cohort_list_table(
+        conn_info = conn_info,
+        result_database_schema = result_database_schema
+      )
+    }
 
     hide("work_cohort_list")
     enable("get_cohort_list")
