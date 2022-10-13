@@ -107,6 +107,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
       deriv = deriv_c_arr
     )
 
+
     # Plot disease cluster
     data <- data_c
     stats <- deriv_c$stats
@@ -125,31 +126,31 @@ disease_cluster_server <- function(input, output, session, transfer) {
       right = as.logical(input$cluster_right)
     )
 
-    shinyjs::hide("work_disease_cluster")
-    shinyjs::enable("plot_disease_cluster")
-
-    color <- AegisFunc::make_leaflet_color(color_type, color_param)
-    popup <- AegisFunc::make_leaflet_popup(data, stats)
-    bound <- AegisFunc::make_leaflet_bound(data)
-    map <- leaflet::leaflet()
-    map <- leaflet::addProviderTiles(map, "CartoDB.Positron")
-    map <- leaflet::fitBounds(map, bound$lng1, bound$lat1, bound$lng2,
-                              bound$lat2)
-    map <- leaflet::addPolygons(map, data = data, fillColor = ~color(indicator),
-                                fillOpacity = 0.8, weight = 1, color = "white", popup = popup)
-    map
-
-    plot_c <- map
-
-    # plot_c <- AegisFunc::get_leaflet_map(
-    #   data = data,
-    #   stats = stats,
-    #   color_type = color_type,
-    #   color_param = color_param
-    # )
-
     # shinyjs::hide("work_disease_cluster")
     # shinyjs::enable("plot_disease_cluster")
+    #
+    # color <- AegisFunc::make_leaflet_color(color_type, color_param)
+    # popup <- AegisFunc::make_leaflet_popup(data, stats)
+    # bound <- AegisFunc::make_leaflet_bound(data)
+    # map <- leaflet::leaflet()
+    # map <- leaflet::addProviderTiles(map, "CartoDB.Positron")
+    # map <- leaflet::fitBounds(map, bound$lng1, bound$lat1, bound$lng2,
+    #                           bound$lat2)
+    # map <- leaflet::addPolygons(map, data = data, fillColor = ~color(indicator),
+    #                             fillOpacity = 0.8, weight = 1, color = "white", popup = popup)
+    # map
+    #
+    # plot_c <- map
+
+    plot_c <- AegisFunc::get_leaflet_map(
+      data = data,
+      stats = stats,
+      color_type = color_type,
+      color_param = color_param
+    )
+
+    shinyjs::hide("work_disease_cluster")
+    shinyjs::enable("plot_disease_cluster")
 
     plot_c
   })
