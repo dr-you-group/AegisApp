@@ -51,7 +51,7 @@ disease_cluster_ui <- shiny::fluidPage(
     ),
     shiny::mainPanel(
       # outputs
-      leaflet::leafletOutput("disease_cluster", width = "400px"),
+      leaflet::leafletOutput("disease_cluster"),
       shinyjs::hidden(
         htmltools::p(id = "work_disease_cluster", "Processing...")
       )
@@ -93,27 +93,23 @@ disease_cluster_server <- function(input, output, session, transfer) {
     # Calculate disease cluster
     table <- transfer$table_adj()
 
-    deriv <- AegisFunc::calculate_disease_cluster(
+    deriv_c <- AegisFunc::calculate_disease_cluster(
       table = table
     )
-    message("len deriv: ", toString(length(deriv)))
 
 
     # Merge geo data with derivatives
     geo <- transfer$geo()
-    deriv_arr <- deriv$arranged_table
+    deriv_c_arr <- deriv_c$arranged_table
 
-    data <- AegisFunc::merge_geo_with_deriv(
+    data_c <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
-      deriv = deriv_arr
+      deriv = deriv_c_arr
     )
-    message("len geo: ", toString(length(geo)))
-    message("len deriv arrange: ", toString(length(deriv)))
 
-
-    # Plot disease map
-    data <- data
-    stats <- deriv$stats
+    # Plot disease cluster
+    data <- data_c
+    stats <- deriv_c$stats
     color_type <- input$cluster_color_type
     color_param <- base::list(
       palette = input$cluster_palette,
@@ -129,17 +125,33 @@ disease_cluster_server <- function(input, output, session, transfer) {
       right = as.logical(input$cluster_right)
     )
 
-    plot <- AegisFunc::get_leaflet_map(
-      data = data,
-      stats = stats,
-      color_type = color_type,
-      color_param = color_param
-    )
-
     shinyjs::hide("work_disease_cluster")
     shinyjs::enable("plot_disease_cluster")
 
-    plot
+    color <- AegisFunc::make_leaflet_color(color_type, color_param)
+    popup <- AegisFunc::make_leaflet_popup(data, stats)
+    bound <- AegisFunc::make_leaflet_bound(data)
+    map <- leaflet::leaflet()
+    map <- leaflet::addProviderTiles(map, "CartoDB.Positron")
+    map <- leaflet::fitBounds(map, bound$lng1, bound$lat1, bound$lng2,
+                              bound$lat2)
+    map <- leaflet::addPolygons(map, data = data, fillColor = ~color(indicator),
+                                fillOpacity = 0.8, weight = 1, color = "white", popup = popup)
+    map
+
+    plot_c <- map
+
+    # plot_c <- AegisFunc::get_leaflet_map(
+    #   data = data,
+    #   stats = stats,
+    #   color_type = color_type,
+    #   color_param = color_param
+    # )
+
+    # shinyjs::hide("work_disease_cluster")
+    # shinyjs::enable("plot_disease_cluster")
+
+    plot_c
   })
 
   output$disease_cluster <- leaflet::renderLeaflet(

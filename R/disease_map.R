@@ -51,7 +51,7 @@ disease_map_ui <- shiny::fluidPage(
     ),
     shiny::mainPanel(
       # outputs
-      leaflet::leafletOutput("disease_map", width = "400px"),
+      leaflet::leafletOutput("disease_map"),
       shinyjs::hidden(
         htmltools::p(id = "work_disease_map", "Processing...")
       )
@@ -102,7 +102,7 @@ disease_map_server <- function(input, output, session, transfer) {
     table <- transfer$table_adj()
     graph_file_path <- graph_file_path
 
-    deriv <- AegisFunc::calculate_disease_map(
+    deriv_m <- AegisFunc::calculate_disease_map(
       table = table,
       graph_file_path = graph_file_path
     )
@@ -110,17 +110,17 @@ disease_map_server <- function(input, output, session, transfer) {
 
     # Merge geo data with derivatives
     geo <- transfer$geo()
-    deriv_arr <- deriv$arranged_table
+    deriv_m_arr <- deriv_m$arranged_table
 
-    data <- AegisFunc::merge_geo_with_deriv(
+    data_m <- AegisFunc::merge_geo_with_deriv(
       geo = geo,
-      deriv = deriv_arr
+      deriv = deriv_m_arr
     )
 
 
     # Plot disease map
-    data <- data
-    stats <- deriv$stats
+    data <- data_m
+    stats <- deriv_m$stats
     color_type <- input$map_color_type
     color_param <- base::list(
       palette = input$map_palette,
@@ -136,7 +136,7 @@ disease_map_server <- function(input, output, session, transfer) {
       right = as.logical(input$map_right)
     )
 
-    plot <- AegisFunc::get_leaflet_map(
+    plot_m <- AegisFunc::get_leaflet_map(
       data = data,
       stats = stats,
       color_type = color_type,
@@ -146,7 +146,7 @@ disease_map_server <- function(input, output, session, transfer) {
     shinyjs::hide("work_disease_map")
     shinyjs::enable("plot_disease_map")
 
-    plot
+    plot_m
   })
 
   output$disease_map <- leaflet::renderLeaflet(
