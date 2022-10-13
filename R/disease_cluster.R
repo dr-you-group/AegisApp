@@ -114,13 +114,13 @@ disease_cluster_server <- function(input, output, session, transfer) {
     color_type <- input$cluster_color_type
     color_param <- base::list(
       palette = input$cluster_palette,
-      domain = if(trimws(input$cluster_domain) == ""){NULL},
+      domain = if(trimws(input$cluster_domain) == ""){NULL}else{trimws(input$cluster_domain)},
       bins = as.numeric(input$cluster_bins),
       pretty = as.logical(input$cluster_pretty),
       n = as.numeric(input$cluster_n),
-      levels = if(trimws(input$cluster_levels) == ""){NULL},
+      levels = if(trimws(input$cluster_levels) == ""){NULL}else{trimws(input$cluster_levels)},
       ordered = as.logical(input$cluster_ordered),
-      na.color = if(trimws(input$cluster_na_color) == ""){"#808080"},
+      na.color = if(trimws(input$cluster_na_color) == ""){"#808080"}else{trimws(input$cluster_na_color)},
       alpha = as.logical(input$cluster_alpha),
       reverse = as.logical(input$cluster_reverse),
       right = as.logical(input$cluster_right)
@@ -135,19 +135,6 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
     shinyjs::hide("work_disease_cluster")
     shinyjs::enable("plot_disease_cluster")
-
-    # color <- AegisFunc::make_leaflet_color(color_type, color_param)
-    # popup <- AegisFunc::make_leaflet_popup(data, stats)
-    # bound <- AegisFunc::make_leaflet_bound(data)
-    # map <- leaflet::leaflet()
-    # map <- leaflet::addProviderTiles(map, "CartoDB.Positron")
-    # map <- leaflet::fitBounds(map, bound$lng1, bound$lat1, bound$lng2,
-    #                           bound$lat2)
-    # map <- leaflet::addPolygons(map, data = data, fillColor = ~color(indicator),
-    #                             fillOpacity = 0.8, weight = 1, color = "white", popup = popup)
-    # map
-    #
-    # plot_c <- map
 
     plot_c
   })

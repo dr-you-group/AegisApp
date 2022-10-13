@@ -124,13 +124,13 @@ disease_map_server <- function(input, output, session, transfer) {
     color_type <- input$map_color_type
     color_param <- base::list(
       palette = input$map_palette,
-      domain = if(trimws(input$map_domain) == ""){NULL},
+      domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
       bins = as.numeric(input$map_bins),
       pretty = as.logical(input$map_pretty),
       n = as.numeric(input$map_n),
-      levels = if(trimws(input$map_levels) == ""){NULL},
+      levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
       ordered = as.logical(input$map_ordered),
-      na.color = if(trimws(input$map_na_color) == ""){"#808080"},
+      na.color = if(trimws(input$map_na_color) == ""){"#808080"}else{trimws(input$map_na_color)},
       alpha = as.logical(input$map_alpha),
       reverse = as.logical(input$map_reverse),
       right = as.logical(input$map_right)
