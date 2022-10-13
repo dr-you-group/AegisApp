@@ -12,7 +12,7 @@ disease_cluster_ui <- shiny::fluidPage(
         shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         shiny::textInput("cluster_domain", "Domain", value = ""),
         shiny::numericInput("cluster_n", "n", value = 1, min = 1, max = 9),
-        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
@@ -23,7 +23,7 @@ disease_cluster_ui <- shiny::fluidPage(
         shiny::textInput("cluster_domain", "Domain", value = ""),
         shiny::numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
         shiny::selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
@@ -32,7 +32,7 @@ disease_cluster_ui <- shiny::fluidPage(
         condition = "input.cluster_color_type == 'colorNumeric'",
         shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
         shiny::textInput("cluster_domain", "Domain", value = ""),
-        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
@@ -42,7 +42,7 @@ disease_cluster_ui <- shiny::fluidPage(
         shiny::textInput("cluster_domain", "Domain", value = ""),
         shiny::textInput("cluster_levels", "Levels", value = ""),
         shiny::selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::textInput("cluster_na_color", "NA color", value = "#808080"),
+        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
@@ -120,7 +120,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
       n = as.numeric(input$cluster_n),
       levels = if(trimws(input$cluster_levels) == ""){NULL}else{trimws(input$cluster_levels)},
       ordered = as.logical(input$cluster_ordered),
-      na.color = if(trimws(input$cluster_na_color) == ""){"#808080"}else{trimws(input$cluster_na_color)},
+      na.color = if(trimws(input$cluster_na_color) == ""){"#FFFFFF"}else{trimws(input$cluster_na_color)},
       alpha = as.logical(input$cluster_alpha),
       reverse = as.logical(input$cluster_reverse),
       right = as.logical(input$cluster_right)

@@ -12,7 +12,7 @@ disease_map_ui <- shiny::fluidPage(
         shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
         shiny::textInput("map_domain", "Domain", value = ""),
         shiny::numericInput("map_n", "n", value = 9, min = 1, max = 9),
-        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
@@ -23,7 +23,7 @@ disease_map_ui <- shiny::fluidPage(
         shiny::textInput("map_domain", "Domain", value = ""),
         shiny::numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
         shiny::selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
@@ -32,7 +32,7 @@ disease_map_ui <- shiny::fluidPage(
         condition = "input.map_color_type == 'colorNumeric'",
         shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
         shiny::textInput("map_domain", "Domain", value = ""),
-        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
@@ -42,7 +42,7 @@ disease_map_ui <- shiny::fluidPage(
         shiny::textInput("map_domain", "Domain", value = ""),
         shiny::textInput("map_levels", "Levels", value = ""),
         shiny::selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::textInput("map_na_color", "NA color", value = "#808080"),
+        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
         shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
         shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
       ),
@@ -130,7 +130,7 @@ disease_map_server <- function(input, output, session, transfer) {
       n = as.numeric(input$map_n),
       levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
       ordered = as.logical(input$map_ordered),
-      na.color = if(trimws(input$map_na_color) == ""){"#808080"}else{trimws(input$map_na_color)},
+      na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
       alpha = as.logical(input$map_alpha),
       reverse = as.logical(input$map_reverse),
       right = as.logical(input$map_right)
