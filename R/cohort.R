@@ -80,7 +80,7 @@ cohort_server <- function(input, output, session, transfer) {
     params <- list()
     params$dbms <- input$dbms
     params$path_to_driver <- input$path_to_driver
-    params$dbms <- input$connection_string
+    params$connection_string <- input$connection_string
     params$target_cohort_definition_id <- input$target_cohort_definition_id
     params$outcome_cohort_definition_id <- input$outcome_cohort_definition_id
     params$cohort_start_date <- input$cohort_start_date
