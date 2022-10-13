@@ -126,9 +126,16 @@ disease_cluster_server <- function(input, output, session, transfer) {
       right = as.logical(input$cluster_right)
     )
 
-    # shinyjs::hide("work_disease_cluster")
-    # shinyjs::enable("plot_disease_cluster")
-    #
+    plot_c <- AegisFunc::get_leaflet_map(
+      data = data,
+      stats = stats,
+      color_type = color_type,
+      color_param = color_param
+    )
+
+    shinyjs::hide("work_disease_cluster")
+    shinyjs::enable("plot_disease_cluster")
+
     # color <- AegisFunc::make_leaflet_color(color_type, color_param)
     # popup <- AegisFunc::make_leaflet_popup(data, stats)
     # bound <- AegisFunc::make_leaflet_bound(data)
@@ -141,16 +148,6 @@ disease_cluster_server <- function(input, output, session, transfer) {
     # map
     #
     # plot_c <- map
-
-    plot_c <- AegisFunc::get_leaflet_map(
-      data = data,
-      stats = stats,
-      color_type = color_type,
-      color_param = color_param
-    )
-
-    shinyjs::hide("work_disease_cluster")
-    shinyjs::enable("plot_disease_cluster")
 
     plot_c
   })
