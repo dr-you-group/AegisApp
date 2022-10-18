@@ -46,7 +46,7 @@ cohort_tab <- shiny::tabsetPanel(
     )
   ),
   shiny::tabPanel(
-    title = "Get adjustmented table",
+    title = "Get adjusted table",
     shiny::sidebarLayout(
       shiny::sidebarPanel(
         # inputs
@@ -54,7 +54,7 @@ cohort_tab <- shiny::tabsetPanel(
         shiny::selectInput("fraction", "Fraction", choices = c("100000")),
         shiny::selectInput("conf_level", "Confidence level", choices = c("0.95")),
         shiny::actionButton("print_table_adj", "Print"),
-        shiny::actionButton("get_table_adj", "Get adjustmented table")
+        shiny::actionButton("get_table_adj", "Get adjusted table")
       ),
       shiny::mainPanel(
         # outputs
