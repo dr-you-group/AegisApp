@@ -19,6 +19,10 @@ AegisApp <- function(...) {
       cohort_ui
     ),
     shiny::tabPanel(
+      title = "Forecasting",
+      forecasting_ui
+    ),
+    shiny::tabPanel(
       title = "Disease Map",
       disease_map_ui
     ),
@@ -42,6 +46,7 @@ AegisApp <- function(...) {
 
     database <- database_server(input, output, session, NULL)
     cohort <- cohort_server(input, output, session, database)
+    forecasting_server(input, output, session, cohort)
     disease_map_server(input, output, session, cohort)
     disease_cluster_server(input, output, session, cohort)
   }

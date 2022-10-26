@@ -99,10 +99,12 @@ disease_map_server <- function(input, output, session, transfer) {
 
 
     # Calculate disease map
+    model <- input$model
     table <- transfer$table_adj()
     graph_file_path <- graph_file_path
 
     deriv_m <- AegisFunc::calculate_disease_map(
+      model = model,
       table = table,
       graph_file_path = graph_file_path
     )

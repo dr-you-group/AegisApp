@@ -91,9 +91,11 @@ disease_cluster_server <- function(input, output, session, transfer) {
     shinyjs::show("work_disease_cluster")
 
     # Calculate disease cluster
+    model <- input$model
     table <- transfer$table_adj()
 
     deriv_c <- AegisFunc::calculate_disease_cluster(
+      model = model,
       table = table
     )
 
