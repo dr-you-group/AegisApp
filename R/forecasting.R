@@ -35,7 +35,8 @@ forecasting_server <- function(input, output, session, transfer) {
   shiny::observe({
     shinyjs::disable("plot_forecasting")
 
-    if (length(transfer$cohort_table()) > 0) {
+    if (sum(match(input$model, c("temporal"), nomatch = 0)) > 0 &
+        length(transfer$cohort_table()) > 0) {
       shinyjs::enable("plot_forecasting")
     }
   })

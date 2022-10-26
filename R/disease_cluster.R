@@ -81,7 +81,9 @@ disease_cluster_server <- function(input, output, session, transfer) {
   shiny::observe({
     shinyjs::disable("plot_disease_cluster")
 
-    if (length(transfer$table_adj()) > 0 & length(transfer$geo()@data) > 0) {
+    if (sum(match(input$model, c("spatial", "spatio-temporal"), nomatch = 0)) > 0 &
+        length(transfer$table_adj()) > 0 &
+        length(transfer$geo()@data) > 0) {
       shinyjs::enable("plot_disease_cluster")
     }
   })
