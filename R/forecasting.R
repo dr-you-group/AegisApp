@@ -1,7 +1,7 @@
 forecasting_ui <- shiny::fluidPage(
   shiny::titlePanel(
     # app title/description
-    "Plot disease map"
+    "Plot forecasting"
   ),
   shiny::sidebarLayout(
     shiny::sidebarPanel(
