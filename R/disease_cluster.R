@@ -7,44 +7,32 @@ disease_cluster_ui <- shiny::fluidPage(
     shiny::sidebarPanel(
       # inputs
       shiny::selectInput("cluster_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
+      shiny::textInput("cluster_domain", "Domain", value = ""),
+      shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
+      shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+      shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
       shiny::conditionalPanel(
-        condition = "input.cluster_color_type == 'colorQuantile'",
-        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("cluster_domain", "Domain", value = ""),
-        shiny::numericInput("cluster_n", "n", value = 1, min = 1, max = 9),
-        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        condition = "['colorQuantile', 'colorBin'].includes(input.cluster_color_type)",
         shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
       shiny::conditionalPanel(
-        condition = "input.cluster_color_type == 'colorBin'",
-        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("cluster_domain", "Domain", value = ""),
+        condition = "['colorQuantile'].includes(input.cluster_color_type)",
+        shiny::numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
+      ),
+      shiny::conditionalPanel(
+        condition = "['colorBin'].includes(input.cluster_color_type)",
         shiny::numericInput("cluster_bins", "Bins", value = 7, min = 1, max = 9),
         shiny::selectInput("cluster_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("cluster_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
       shiny::conditionalPanel(
-        condition = "input.cluster_color_type == 'colorNumeric'",
-        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("cluster_domain", "Domain", value = ""),
-        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-      ),
-      shiny::conditionalPanel(
-        condition = "input.cluster_color_type == 'colorFactor'",
-        shiny::selectInput("cluster_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("cluster_domain", "Domain", value = ""),
+        condition = "['colorFactor'].includes(input.cluster_color_type)",
         shiny::textInput("cluster_levels", "Levels", value = ""),
         shiny::selectInput("cluster_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::textInput("cluster_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("cluster_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("cluster_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      shiny::conditionalPanel(
+        condition = "['colorNumeric'].includes(input.cluster_color_type)"
+        # do something
       ),
       shiny::actionButton("print_disease_cluster", "Print"),
       shiny::actionButton("plot_disease_cluster", "Plot disease cluster")

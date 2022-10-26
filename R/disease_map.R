@@ -7,44 +7,32 @@ disease_map_ui <- shiny::fluidPage(
     shiny::sidebarPanel(
       # inputs
       shiny::selectInput("map_color_type", "Color type", choices = c("colorQuantile", "colorBin", "colorNumeric", "colorFactor")),
+      shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
+      shiny::textInput("map_domain", "Domain", value = ""),
+      shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
+      shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
+      shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
       shiny::conditionalPanel(
-        condition = "input.map_color_type == 'colorQuantile'",
-        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("map_domain", "Domain", value = ""),
-        shiny::numericInput("map_n", "n", value = 9, min = 1, max = 9),
-        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
+        condition = "['colorQuantile', 'colorBin'].includes(input.map_color_type)",
         shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
       shiny::conditionalPanel(
-        condition = "input.map_color_type == 'colorBin'",
-        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("map_domain", "Domain", value = ""),
+        condition = "['colorQuantile'].includes(input.map_color_type)",
+        shiny::numericInput("map_n", "n", value = 9, min = 1, max = 9),
+      ),
+      shiny::conditionalPanel(
+        condition = "['colorBin'].includes(input.map_color_type)",
         shiny::numericInput("map_bins", "Bins", value = 7, min = 1, max = 9),
         shiny::selectInput("map_pretty", "Pretty", choices = c(TRUE, FALSE), selected = TRUE),
-        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("map_right", "Right", choices = c(TRUE, FALSE), selected = FALSE)
       ),
       shiny::conditionalPanel(
-        condition = "input.map_color_type == 'colorNumeric'",
-        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("map_domain", "Domain", value = ""),
-        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
-      ),
-      shiny::conditionalPanel(
-        condition = "input.map_color_type == 'colorFactor'",
-        shiny::selectInput("map_palette", "Palette", choices = c("Reds", "Greens")),
-        shiny::textInput("map_domain", "Domain", value = ""),
+        condition = "['colorFactor'].includes(input.map_color_type)",
         shiny::textInput("map_levels", "Levels", value = ""),
         shiny::selectInput("map_ordered", "Ordered", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::textInput("map_na_color", "NA color", value = "#FFFFFF"),
-        shiny::selectInput("map_alpha", "Alpha", choices = c(TRUE, FALSE), selected = FALSE),
-        shiny::selectInput("map_reverse", "Reverse", choices = c(TRUE, FALSE), selected = FALSE)
+      ),
+      shiny::conditionalPanel(
+        condition = "['colorNumeric'].includes(input.map_color_type)"
+        # do something
       ),
       shiny::actionButton("print_disease_map", "Print"),
       shiny::actionButton("plot_disease_map", "Plot disease map")
