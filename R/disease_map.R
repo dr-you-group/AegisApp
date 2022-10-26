@@ -62,6 +62,7 @@ disease_map_ui <- shiny::fluidPage(
 disease_map_server <- function(input, output, session, transfer) {
   shiny::observeEvent(input$print_disease_map, {
     params <- list()
+    params$model <- input$model
     params$color_type <- input$map_color_type
     params$palette <- input$map_palette
     params$domain <- input$map_domain

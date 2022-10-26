@@ -25,6 +25,7 @@ forecasting_ui <- shiny::fluidPage(
 forecasting_server <- function(input, output, session, transfer) {
   shiny::observeEvent(input$print_forecasting, {
     params <- list()
+    params$model <- input$model
     params$fore_obs_end_date <- input$fore_obs_end_date
     params$fore_pred_end_date <- input$fore_pred_end_date
     params$fore_var_type <- input$fore_var_type
@@ -46,12 +47,14 @@ forecasting_server <- function(input, output, session, transfer) {
     shinyjs::show("work_forecasting")
 
     # Calculate forecasting
+    model <- input$model
     table <- transfer$cohort_table()
     observation_end_date <- input$fore_obs_end_date
     prediction_end_date <- input$fore_pred_end_date
     variables_type <- input$fore_var_type
 
     deriv_f <- AegisFunc::calculate_forecasting(
+      model = model,
       table = table,
       observation_end_date = observation_end_date,
       prediction_end_date = prediction_end_date,

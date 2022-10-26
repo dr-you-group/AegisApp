@@ -124,6 +124,7 @@ cohort_server <- function(input, output, session, transfer) {
 
   shiny::observeEvent(input$print_table_adj, {
     params <- list()
+    params$model <- input$model
     params$mode <- input$mode
     params$fraction <- input$fraction
     params$conf_level <- input$conf_level
@@ -280,20 +281,24 @@ cohort_server <- function(input, output, session, transfer) {
 
 
     # Arrange table
+    model <- input$model
     table <- geo_map
 
     table_arr <- AegisFunc::calculate_count_with_geo_oid(
+      model = model,
       table = table
     )
 
 
     # Adjustment for age and sex
+    model <- input$model
     table <- table_arr
     mode <- input$mode
     fraction <- input$fraction
     conf_level <- input$conf_level
 
     table_adj <- AegisFunc::calculate_adjust_age_sex_indirectly(
+      model = model,
       table = table,
       mode = mode,
       fraction = fraction,

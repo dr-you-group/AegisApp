@@ -62,6 +62,7 @@ disease_cluster_ui <- shiny::fluidPage(
 disease_cluster_server <- function(input, output, session, transfer) {
   shiny::observeEvent(input$print_disease_cluster, {
     params <- list()
+    params$model <- input$model
     params$color_type <- input$cluster_color_type
     params$palette <- input$cluster_palette
     params$domain <- input$cluster_domain
