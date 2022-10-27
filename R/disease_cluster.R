@@ -40,8 +40,12 @@ disease_cluster_ui <- shiny::fluidPage(
     shiny::mainPanel(
       # outputs
       leaflet::leafletOutput("disease_cluster"),
+      shiny::uiOutput("disease_clusters"),
       shinyjs::hidden(
         htmltools::p(id = "work_disease_cluster", "Processing...")
+      ),
+      shinyjs::hidden(
+        htmltools::p(id = "work_disease_clusters", "Processing... making cluster plots")
       )
     )
   )
@@ -92,6 +96,9 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
 
     if(input$model == "spatio-temporal") {
+      shinyjs::hide("disease_cluster")
+      shinyjs::show("disease_clusters")
+
       # Merge geo data with derivatives
       years_c <- names(deriv_c)
 
@@ -141,6 +148,9 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
       names(plot_c) <- years_c
     } else { # input$model == "spatial"
+      shinyjs::hide("disease_clusters")
+      shinyjs::show("disease_cluster")
+
       # Merge geo data with derivatives
       geo <- transfer$geo()
       deriv_c_arr <- deriv_c$arranged_table
@@ -186,11 +196,62 @@ disease_cluster_server <- function(input, output, session, transfer) {
     if(input$model == "spatio-temporal") {
       idx <- names(disease_cluster())
 
-      message("idx: ", idx)
+      message("renderLeaflet idx: ", idx)
+      message("renderLeaflet len: ", length(idx))
 
       disease_cluster()[[idx[1]]][[1]]
     } else {
       disease_cluster()
     }
   )
+
+  # reference: https://github.com/rstudio/shiny/issues/3348#issuecomment-958814151
+  rendered_js_callback_ui <- function(input_id, input_value = "Date.now().toString()") {
+    tags$script(
+      glue::glue_safe("Shiny.setInputValue(\"{input_id}\", {input_value})")
+    )
+  }
+
+  shiny::observeEvent(disease_cluster(), {
+    shinyjs::show("work_disease_clusters")
+
+    shiny::insertUI(
+      session = session,
+      selector = "#disease_clusters",
+      ui = htmltools::tagList(
+        lapply(1:length(names(disease_cluster())), function(i) {
+          plotname <- paste("disease_cluster_", i, sep="")
+
+          message("render ui plotname: ", plotname)
+
+          leaflet::leafletOutput(plotname)
+        }),
+        rendered_js_callback_ui(input_id = "my_input_for_catching_render")
+      )
+    )
+  })
+
+  shiny::observeEvent(input$my_input_for_catching_render, {
+    idx <- names(disease_cluster())
+
+    message("observe disease_clusters idx: ", idx)
+    message("observe disease_clusters len: ", length(idx))
+
+    for (i in 1:length(idx)) {
+      local({
+        plotname <- paste("disease_cluster_", i, sep="")
+
+        message("observe plotname: ", plotname)
+
+        output[[plotname]] <- leaflet::renderLeaflet({
+          message("render plotname: ", plotname)
+
+          disease_cluster()[idx[i]][[1]]
+        })
+      })
+    }
+
+    shinyjs::hide("work_disease_clusters")
+  }, ignoreInit = TRUE)
+
 }

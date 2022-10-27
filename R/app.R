@@ -33,16 +33,12 @@ AegisApp <- function(...) {
   )
 
   server <- function(input, output, session) {
-    # observe({
-    #   query <- parseQueryString(session$clientData$url_search)
-    #   message("query: ", toString(paste(names(query), query, sep = "=", collapse=", ")))
-    #
-    #   if (!is.null(query$demo) & isTRUE(as.logical(query$demo))) {
-    #     data_file <- file.path(getwd(), "data", "aegis_sample.Rdata")
-    #     load(data_file)
-    #     message("data file: ", toString(data_file))
-    #   }
-    # })
+    # # reference: https://github.com/rstudio/shiny/issues/3348#issuecomment-958814151
+    # rendered_js_callback_ui <- function(input_id, input_value = "Date.now().toString()") {
+    #   tags$script(
+    #     glue::glue_safe("Shiny.setInputValue(\"{input_id}\", {input_value})")
+    #   )
+    # }
 
     database <- database_server(input, output, session, NULL)
     cohort <- cohort_server(input, output, session, database)

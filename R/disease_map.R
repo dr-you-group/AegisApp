@@ -43,6 +43,9 @@ disease_map_ui <- shiny::fluidPage(
       shiny::uiOutput("disease_maps"),
       shinyjs::hidden(
         htmltools::p(id = "work_disease_map", "Processing...")
+      ),
+      shinyjs::hidden(
+        htmltools::p(id = "work_disease_maps", "Processing... making map plots")
       )
     )
   )
@@ -103,6 +106,9 @@ disease_map_server <- function(input, output, session, transfer) {
 
 
     if(input$model == "spatio-temporal") {
+      shinyjs::hide("disease_map")
+      shinyjs::show("disease_maps")
+
       # Merge geo data with derivatives
       years_m <- names(deriv_m)
 
@@ -152,6 +158,9 @@ disease_map_server <- function(input, output, session, transfer) {
 
       names(plot_m) <- years_m
     } else { # input$model == "spatial"
+      shinyjs::hide("disease_maps")
+      shinyjs::show("disease_map")
+
       # Merge geo data with derivatives
       geo <- transfer$geo()
       deriv_m_arr <- deriv_m$arranged_table
@@ -206,121 +215,79 @@ disease_map_server <- function(input, output, session, transfer) {
     }
   )
 
-  output$disease_maps <- shiny::renderUI(
-    if(input$model == "spatio-temporal") {
-      idx <- names(disease_map())
+  # reference: https://github.com/rstudio/shiny/issues/3348#issuecomment-958814151
+  rendered_js_callback_ui <- function(input_id, input_value = "Date.now().toString()") {
+    tags$script(
+      glue::glue_safe("Shiny.setInputValue(\"{input_id}\", {input_value})")
+    )
+  }
 
-      message("renderUI idx: ", idx)
-      message("renderUI len: ", length(idx))
+  shiny::observeEvent(disease_map(), {
+    shinyjs::show("work_disease_maps")
 
-      disease_map_list <- lapply(1:length(idx), function(i) {
+    shiny::insertUI(
+      session = session,
+      selector = "#disease_maps",
+      ui = htmltools::tagList(
+        lapply(1:length(names(disease_map())), function(i) {
+          plotname <- paste("disease_map_", i, sep="")
+
+          message("render ui plotname: ", plotname)
+
+          leaflet::leafletOutput(plotname)
+        }),
+        rendered_js_callback_ui(input_id = "my_input_for_catching_render")
+      )
+    )
+  })
+
+  shiny::observeEvent(input$my_input_for_catching_render, {
+    idx <- names(disease_map())
+
+    message("observe disease_maps idx: ", idx)
+    message("observe disease_maps len: ", length(idx))
+
+    for (i in 1:length(idx)) {
+      local({
         plotname <- paste("disease_map_", i, sep="")
 
-        message("leafletOutput plotname: ", plotname)
+        message("observe plotname: ", plotname)
 
-        leaflet::leafletOutput(plotname)
-        # shiny::plotOutput(plotname, height = 280, width = 250)
-      })
+        output[[plotname]] <- leaflet::renderLeaflet({
+          message("render plotname: ", plotname)
 
-      do.call(htmltools::tagList, disease_map_list)
-
-      # # col.width <- round(12/n.col) # Calculate bootstrap column width
-      # # n.row <- ceiling(length(plots)/n.col) # calculate number of rows
-      # n.col <- 1
-      # col.width <- 12
-      # n.row <- length(idx)
-      # cnter <<- 0 # Counter variable
-      #
-      # # Create row with columns
-      # rows  <- lapply(1:n.row,function(row.num){
-      #   cols  <- lapply(1:n.col, function(i) {
-      #     cnter    <<- cnter + 1
-      #     plotname <- paste("disease_map_", cnter, sep="")
-      #     shiny::column(col.width, leaflet::leafletOutput(plotname, height = 280, width = 250))
-      #   })
-      #   shiny::fluidRow( do.call(htmltools::tagList, cols) )
-      # })
-      #
-      # do.call(htmltools::tagList, rows)
-    }
-  )
-
-  shiny::observe({
-    if(!is.null(transfer$table_adj()$cohort_start_year)){
-      n_maps <- length(unique(transfer$table_adj()$cohort_start_year))
-
-      for (i in 1:n_maps) {
-        # Need local so that each item gets its own number. Without it, the value
-        # of i in the renderPlot() will be the same across all instances, because
-        # of when the expression is evaluated.
-        local({
-          my_i <- i
-          plotname <- paste("disease_map_", my_i, sep="")
-
-          output[[plotname]] <- leaflet::renderLeaflet(
-            # disease_map()[[my_i]]
-            leaflet::leaflet()
-          )
+          disease_map()[idx[i]][[1]]
         })
-      }
+      })
     }
-  })
-  # for (i in 1:11) {
-  #   # Need local so that each item gets its own number. Without it, the value
-  #   # of i in the renderPlot() will be the same across all instances, because
-  #   # of when the expression is evaluated.
-  #   local({
-  #     my_i <- i
-  #     plotname <- paste("disease_map_", my_i, sep="")
-  #
-  #     output[[plotname]] <- leaflet::renderLeaflet(
-  #       disease_map()[idx[my_i]][[1]]
-  #     )
-  #   })
+
+    shinyjs::hide("work_disease_maps")
+  }, ignoreInit = TRUE)
+
+
+  # # reference: https://github.com/rstudio/shiny/issues/3348#issuecomment-958814151
+  # rendered_js_callback_ui <- function(input_id, input_value = "Date.now().toString()") {
+  #   tags$script(
+  #     glue::glue_safe("Shiny.setInputValue(\"{input_id}\", {input_value})")
+  #   )
   # }
-
-  # shiny::observe({
-  #   if(input$model == "spatio-temporal") {
-  #     idx <- names(disease_map())
   #
-  #     message("observe idx: ", idx)
-  #     message("observe len: ", length(idx))
-  #
-  #     for (i in 1:length(idx)) {
-  #       message("observe i: ", i)
-  #
-  #       # Need local so that each item gets its own number. Without it, the value
-  #       # of i in the renderPlot() will be the same across all instances, because
-  #       # of when the expression is evaluated.
-  #       local({
-  #         my_i <- i
-  #         plotname <- paste("disease_map_", my_i, sep="")
-  #
-  #         message("renderLeaflet plotname: ", plotname)
-  #
-  #         output[[plotname]] <- leaflet::renderLeaflet({
-  #           disease_map()[idx[my_i]][[1]]
-  #         })
-  #         # output[[plotname]] <- shiny::renderPlot({
-  #         #   plot(1:my_i, 1:my_i,
-  #         #        xlim = c(1, max_plots),
-  #         #        ylim = c(1, max_plots),
-  #         #        main = paste("1:", my_i, ".  n is ", input$n, sep = "")
-  #         #   )
-  #         # })
-  #       })
-  #     }
-  #
-  #     # for (i in 1:length(names(disease_map()))) {
-  #     #   local({
-  #     #     n <- i # Make local variable
-  #     #     plotname <- paste("disease_map_", n , sep="")
-  #     #     output[[plotname]] <- leaflet::renderLeaflet({
-  #     #       disease_map()[[n]]
-  #     #     })
-  #     #   })
-  #     # }
-  #   }
-  # })
-
+  #' observeEvent(input$a, {
+  #'   #' `insertUI` instead of `renderUI`
+  #'   insertUI(
+  #'     session = session,
+  #'     selector = "#ui_out",
+  #'     ui = tagList(
+  #'       lapply(1:1000, function(i) {
+  #'         numericInput(paste0("n", i), paste0("n", i), value = 0)
+  #'       }),
+  #'       #' Inform server that the UI has been already rendered - it won't work here
+  #'       rendered_js_callback_ui(input_id = "my_input_for_catching_render")
+  #'     )
+  #'   )
+  #' })
+  #'
+  #' observeEvent(input$my_input_for_catching_render, {
+  #'   loadserver(input, output, session)
+  #' }, ignoreInit = TRUE)
 }
