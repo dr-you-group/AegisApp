@@ -249,14 +249,15 @@ disease_map_server <- function(input, output, session, transfer) {
 
     for (i in 1:length(idx)) {
       local({
-        plotname <- paste("disease_map_", i, sep="")
+        my_i <- i
+        plotname <- paste("disease_map_", my_i, sep="")
 
         message("observe plotname: ", plotname)
 
         output[[plotname]] <- leaflet::renderLeaflet({
           message("render plotname: ", plotname)
 
-          disease_map()[idx[i]][[1]]
+          disease_map()[[my_i]]
         })
       })
     }

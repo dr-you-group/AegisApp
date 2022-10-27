@@ -239,14 +239,15 @@ disease_cluster_server <- function(input, output, session, transfer) {
 
     for (i in 1:length(idx)) {
       local({
-        plotname <- paste("disease_cluster_", i, sep="")
+        my_i <- i
+        plotname <- paste("disease_cluster_", my_i, sep="")
 
         message("observe plotname: ", plotname)
 
         output[[plotname]] <- leaflet::renderLeaflet({
           message("render plotname: ", plotname)
 
-          disease_cluster()[idx[i]][[1]]
+          disease_cluster()[[my_i]]
         })
       })
     }
