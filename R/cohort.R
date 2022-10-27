@@ -7,7 +7,7 @@ cohort_tab <- shiny::tabsetPanel(
       shiny::sidebarPanel(
         # inputs
         # shiny::selectInput("model", "Model to analyse", choices = c("spatial", "temporal", "spatio-temporal")),
-        shiny::selectInput("model", "Model to analyse", choices = c("spatial", "temporal")),
+        shiny::selectInput("model", "Model to analyse", choices = c("temporal", "spatio-temporal")),
         shiny::selectInput("target_cohort_definition_id", "Target cohort definition id", choices = c()),
         shiny::selectInput("outcome_cohort_definition_id", "Outcome cohort definition id", choices = c()),
         shiny::conditionalPanel(
@@ -184,8 +184,8 @@ cohort_server <- function(input, output, session, transfer) {
         cohort_table <- AegisApp::cohort_table_for_spatial
       } else if (input$model == "temporal") {
         cohort_table <- AegisApp::cohort_table_for_temporal
-      # } else if (input$model == "spatio-temporal") {
-      #   cohort_table <- AegisApp::cohort_table_for_spatio_temporal
+      } else if (input$model == "spatio-temporal") {
+        cohort_table <- AegisApp::cohort_table_for_spatio_temporal
       } else {
         cohort_table <- AegisApp::cohort_table
       }

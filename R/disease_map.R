@@ -40,6 +40,7 @@ disease_map_ui <- shiny::fluidPage(
     shiny::mainPanel(
       # outputs
       leaflet::leafletOutput("disease_map"),
+      shiny::uiOutput("disease_maps"),
       shinyjs::hidden(
         htmltools::p(id = "work_disease_map", "Processing...")
       )
@@ -101,40 +102,90 @@ disease_map_server <- function(input, output, session, transfer) {
     )
 
 
-    # Merge geo data with derivatives
-    geo <- transfer$geo()
-    deriv_m_arr <- deriv_m$arranged_table
+    if(input$model == "spatio-temporal") {
+      # Merge geo data with derivatives
+      years_m <- names(deriv_m)
 
-    data_m <- AegisFunc::merge_geo_with_deriv(
-      geo = geo,
-      deriv = deriv_m_arr
-    )
+      data_m <- base::list()
+
+      for(i in 1:length(years_m)) {
+        geo <- transfer$geo()
+        deriv_m_arr <- deriv_m[years_m[i]][[1]]$arranged_table
+
+        data_m <- append(data_m, list(AegisFunc::merge_geo_with_deriv(
+          geo = geo,
+          deriv = deriv_m_arr
+        )))
+      }
+
+      names(data_m) <- years_m
+
+      # Plot disease map
+      plot_m <- base::list()
+
+      for(i in 1:length(years_m)) {
+        data <- data_m[years_m[i]][[1]]
+        stats <- deriv_m[years_m[i]][[1]]$stats
+        color_type <- "colorQuantile"
+        color_param <- base::list(
+          palette = "Reds",
+          domain = NULL,
+          bins = 7,
+          pretty = TRUE,
+          n = 9,
+          levels = NULL,
+          ordered = FALSE,
+          na.color = "#FFFFFF",
+          alpha = FALSE,
+          reverse = FALSE,
+          right = FALSE
+        )
 
 
-    # Plot disease map
-    data <- data_m
-    stats <- deriv_m$stats
-    color_type <- input$map_color_type
-    color_param <- base::list(
-      palette = input$map_palette,
-      domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
-      bins = as.numeric(input$map_bins),
-      pretty = as.logical(input$map_pretty),
-      n = as.numeric(input$map_n),
-      levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
-      ordered = as.logical(input$map_ordered),
-      na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
-      alpha = as.logical(input$map_alpha),
-      reverse = as.logical(input$map_reverse),
-      right = as.logical(input$map_right)
-    )
+        plot_m <- append(plot_m, list(AegisFunc::get_leaflet_map(
+          data = data,
+          stats = stats,
+          color_type = color_type,
+          color_param = color_param
+        )))
+      }
 
-    plot_m <- AegisFunc::get_leaflet_map(
-      data = data,
-      stats = stats,
-      color_type = color_type,
-      color_param = color_param
-    )
+      names(plot_m) <- years_m
+    } else { # input$model == "spatial"
+      # Merge geo data with derivatives
+      geo <- transfer$geo()
+      deriv_m_arr <- deriv_m$arranged_table
+
+      data_m <- AegisFunc::merge_geo_with_deriv(
+        geo = geo,
+        deriv = deriv_m_arr
+      )
+
+      # Plot disease map
+      data <- data_m
+      stats <- deriv_m$stats
+      color_type <- input$map_color_type
+      color_param <- base::list(
+        palette = input$map_palette,
+        domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
+        bins = as.numeric(input$map_bins),
+        pretty = as.logical(input$map_pretty),
+        n = as.numeric(input$map_n),
+        levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
+        ordered = as.logical(input$map_ordered),
+        na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
+        alpha = as.logical(input$map_alpha),
+        reverse = as.logical(input$map_reverse),
+        right = as.logical(input$map_right)
+      )
+
+      plot_m <- AegisFunc::get_leaflet_map(
+        data = data,
+        stats = stats,
+        color_type = color_type,
+        color_param = color_param
+      )
+    }
 
     shinyjs::hide("work_disease_map")
     shinyjs::enable("plot_disease_map")
@@ -143,6 +194,133 @@ disease_map_server <- function(input, output, session, transfer) {
   })
 
   output$disease_map <- leaflet::renderLeaflet(
-    disease_map()
+    if(input$model == "spatio-temporal") {
+      idx <- names(disease_map())
+
+      message("renderLeaflet idx: ", idx)
+      message("renderLeaflet len: ", length(idx))
+
+      disease_map()[idx[1]][[1]]
+    } else {
+      disease_map()
+    }
   )
+
+  output$disease_maps <- shiny::renderUI(
+    if(input$model == "spatio-temporal") {
+      idx <- names(disease_map())
+
+      message("renderUI idx: ", idx)
+      message("renderUI len: ", length(idx))
+
+      disease_map_list <- lapply(1:length(idx), function(i) {
+        plotname <- paste("disease_map_", i, sep="")
+
+        message("leafletOutput plotname: ", plotname)
+
+        leaflet::leafletOutput(plotname)
+        # shiny::plotOutput(plotname, height = 280, width = 250)
+      })
+
+      do.call(htmltools::tagList, disease_map_list)
+
+      # # col.width <- round(12/n.col) # Calculate bootstrap column width
+      # # n.row <- ceiling(length(plots)/n.col) # calculate number of rows
+      # n.col <- 1
+      # col.width <- 12
+      # n.row <- length(idx)
+      # cnter <<- 0 # Counter variable
+      #
+      # # Create row with columns
+      # rows  <- lapply(1:n.row,function(row.num){
+      #   cols  <- lapply(1:n.col, function(i) {
+      #     cnter    <<- cnter + 1
+      #     plotname <- paste("disease_map_", cnter, sep="")
+      #     shiny::column(col.width, leaflet::leafletOutput(plotname, height = 280, width = 250))
+      #   })
+      #   shiny::fluidRow( do.call(htmltools::tagList, cols) )
+      # })
+      #
+      # do.call(htmltools::tagList, rows)
+    }
+  )
+
+  shiny::observe({
+    if(!is.null(transfer$table_adj()$cohort_start_year)){
+      n_maps <- length(unique(transfer$table_adj()$cohort_start_year))
+
+      for (i in 1:n_maps) {
+        # Need local so that each item gets its own number. Without it, the value
+        # of i in the renderPlot() will be the same across all instances, because
+        # of when the expression is evaluated.
+        local({
+          my_i <- i
+          plotname <- paste("disease_map_", my_i, sep="")
+
+          output[[plotname]] <- leaflet::renderLeaflet(
+            # disease_map()[[my_i]]
+            leaflet::leaflet()
+          )
+        })
+      }
+    }
+  })
+  # for (i in 1:11) {
+  #   # Need local so that each item gets its own number. Without it, the value
+  #   # of i in the renderPlot() will be the same across all instances, because
+  #   # of when the expression is evaluated.
+  #   local({
+  #     my_i <- i
+  #     plotname <- paste("disease_map_", my_i, sep="")
+  #
+  #     output[[plotname]] <- leaflet::renderLeaflet(
+  #       disease_map()[idx[my_i]][[1]]
+  #     )
+  #   })
+  # }
+
+  # shiny::observe({
+  #   if(input$model == "spatio-temporal") {
+  #     idx <- names(disease_map())
+  #
+  #     message("observe idx: ", idx)
+  #     message("observe len: ", length(idx))
+  #
+  #     for (i in 1:length(idx)) {
+  #       message("observe i: ", i)
+  #
+  #       # Need local so that each item gets its own number. Without it, the value
+  #       # of i in the renderPlot() will be the same across all instances, because
+  #       # of when the expression is evaluated.
+  #       local({
+  #         my_i <- i
+  #         plotname <- paste("disease_map_", my_i, sep="")
+  #
+  #         message("renderLeaflet plotname: ", plotname)
+  #
+  #         output[[plotname]] <- leaflet::renderLeaflet({
+  #           disease_map()[idx[my_i]][[1]]
+  #         })
+  #         # output[[plotname]] <- shiny::renderPlot({
+  #         #   plot(1:my_i, 1:my_i,
+  #         #        xlim = c(1, max_plots),
+  #         #        ylim = c(1, max_plots),
+  #         #        main = paste("1:", my_i, ".  n is ", input$n, sep = "")
+  #         #   )
+  #         # })
+  #       })
+  #     }
+  #
+  #     # for (i in 1:length(names(disease_map()))) {
+  #     #   local({
+  #     #     n <- i # Make local variable
+  #     #     plotname <- paste("disease_map_", n , sep="")
+  #     #     output[[plotname]] <- leaflet::renderLeaflet({
+  #     #       disease_map()[[n]]
+  #     #     })
+  #     #   })
+  #     # }
+  #   }
+  # })
+
 }

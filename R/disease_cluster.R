@@ -91,40 +91,90 @@ disease_cluster_server <- function(input, output, session, transfer) {
     )
 
 
-    # Merge geo data with derivatives
-    geo <- transfer$geo()
-    deriv_c_arr <- deriv_c$arranged_table
+    if(input$model == "spatio-temporal") {
+      # Merge geo data with derivatives
+      years_c <- names(deriv_c)
 
-    data_c <- AegisFunc::merge_geo_with_deriv(
-      geo = geo,
-      deriv = deriv_c_arr
-    )
+      data_c <- base::list()
+
+      for(i in 1:length(years_c)) {
+        geo <- transfer$geo()
+        deriv_c_arr <- deriv_c[years_c[i]][[1]]$arranged_table
+
+        data_c <- append(data_c, list(AegisFunc::merge_geo_with_deriv(
+          geo = geo,
+          deriv = deriv_c_arr
+        )))
+      }
+
+      names(data_c) <- years_c
+
+      # Plot disease map
+      plot_c <- base::list()
+
+      for(i in 1:length(years_c)) {
+        data <- data_c[years_c[i]][[1]]
+        stats <- deriv_c[years_c[i]][[1]]$stats
+        color_type <- "colorQuantile"
+        color_param <- base::list(
+          palette = "Reds",
+          domain = NULL,
+          bins = 7,
+          pretty = TRUE,
+          n = 9,
+          levels = NULL,
+          ordered = FALSE,
+          na.color = "#FFFFFF",
+          alpha = FALSE,
+          reverse = FALSE,
+          right = FALSE
+        )
 
 
-    # Plot disease cluster
-    data <- data_c
-    stats <- deriv_c$stats
-    color_type <- input$cluster_color_type
-    color_param <- base::list(
-      palette = input$cluster_palette,
-      domain = if(trimws(input$cluster_domain) == ""){NULL}else{trimws(input$cluster_domain)},
-      bins = as.numeric(input$cluster_bins),
-      pretty = as.logical(input$cluster_pretty),
-      n = as.numeric(input$cluster_n),
-      levels = if(trimws(input$cluster_levels) == ""){NULL}else{trimws(input$cluster_levels)},
-      ordered = as.logical(input$cluster_ordered),
-      na.color = if(trimws(input$cluster_na_color) == ""){"#FFFFFF"}else{trimws(input$cluster_na_color)},
-      alpha = as.logical(input$cluster_alpha),
-      reverse = as.logical(input$cluster_reverse),
-      right = as.logical(input$cluster_right)
-    )
+        plot_c <- append(plot_c, list(AegisFunc::get_leaflet_map(
+          data = data,
+          stats = stats,
+          color_type = color_type,
+          color_param = color_param
+        )))
+      }
 
-    plot_c <- AegisFunc::get_leaflet_map(
-      data = data,
-      stats = stats,
-      color_type = color_type,
-      color_param = color_param
-    )
+      names(plot_c) <- years_c
+    } else { # input$model == "spatial"
+      # Merge geo data with derivatives
+      geo <- transfer$geo()
+      deriv_c_arr <- deriv_c$arranged_table
+
+      data_c <- AegisFunc::merge_geo_with_deriv(
+        geo = geo,
+        deriv = deriv_c_arr
+      )
+
+      # Plot disease map
+      data <- data_c
+      stats <- deriv_c$stats
+      color_type <- input$map_color_type
+      color_param <- base::list(
+        palette = input$map_palette,
+        domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
+        bins = as.numeric(input$map_bins),
+        pretty = as.logical(input$map_pretty),
+        n = as.numeric(input$map_n),
+        levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
+        ordered = as.logical(input$map_ordered),
+        na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
+        alpha = as.logical(input$map_alpha),
+        reverse = as.logical(input$map_reverse),
+        right = as.logical(input$map_right)
+      )
+
+      plot_c <- AegisFunc::get_leaflet_map(
+        data = data,
+        stats = stats,
+        color_type = color_type,
+        color_param = color_param
+      )
+    }
 
     shinyjs::hide("work_disease_cluster")
     shinyjs::enable("plot_disease_cluster")
@@ -133,6 +183,14 @@ disease_cluster_server <- function(input, output, session, transfer) {
   })
 
   output$disease_cluster <- leaflet::renderLeaflet(
-    disease_cluster()
+    if(input$model == "spatio-temporal") {
+      idx <- names(disease_cluster())
+
+      message("idx: ", idx)
+
+      disease_cluster()[[idx[1]]][[1]]
+    } else {
+      disease_cluster()
+    }
   )
 }
