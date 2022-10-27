@@ -18,7 +18,7 @@ disease_cluster_ui <- shiny::fluidPage(
       ),
       shiny::conditionalPanel(
         condition = "['colorQuantile'].includes(input.cluster_color_type)",
-        shiny::numericInput("cluster_n", "n", value = 9, min = 1, max = 9),
+        shiny::numericInput("cluster_n", "n", value = 1, min = 1, max = 9),
       ),
       shiny::conditionalPanel(
         condition = "['colorBin'].includes(input.cluster_color_type)",
