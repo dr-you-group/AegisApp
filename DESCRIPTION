@@ -1,6 +1,6 @@
 Package: AegisApp
 Title: AegisApp
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
   c(
     person("Sungjae", "Jung", , "sungjae.2425@gmail.com", role = c("aut"),
