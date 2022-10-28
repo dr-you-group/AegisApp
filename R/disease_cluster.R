@@ -124,17 +124,17 @@ disease_cluster_server <- function(input, output, session, transfer) {
         stats <- deriv_c[years_c[i]][[1]]$stats
         color_type <- "colorQuantile"
         color_param <- base::list(
-          palette = "Reds",
-          domain = NULL,
-          bins = 7,
-          pretty = TRUE,
-          n = 9,
-          levels = NULL,
-          ordered = FALSE,
-          na.color = "#FFFFFF",
-          alpha = FALSE,
-          reverse = FALSE,
-          right = FALSE
+          palette = input$map_palette,
+          domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
+          bins = as.numeric(input$map_bins),
+          pretty = as.logical(input$map_pretty),
+          n = as.numeric(input$map_n),
+          levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
+          ordered = as.logical(input$map_ordered),
+          na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
+          alpha = as.logical(input$map_alpha),
+          reverse = as.logical(input$map_reverse),
+          right = as.logical(input$map_right)
         )
 
 
