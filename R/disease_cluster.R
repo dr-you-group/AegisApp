@@ -122,19 +122,19 @@ disease_cluster_server <- function(input, output, session, transfer) {
       for(i in 1:length(years_c)) {
         data <- data_c[years_c[i]][[1]]
         stats <- deriv_c[years_c[i]][[1]]$stats
-        color_type <- input$map_color_type
+        color_type <- input$cluster_color_type
         color_param <- base::list(
-          palette = input$map_palette,
-          domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
-          bins = as.numeric(input$map_bins),
-          pretty = as.logical(input$map_pretty),
-          n = as.numeric(input$map_n),
-          levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
-          ordered = as.logical(input$map_ordered),
-          na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
-          alpha = as.logical(input$map_alpha),
-          reverse = as.logical(input$map_reverse),
-          right = as.logical(input$map_right)
+          palette = input$cluster_palette,
+          domain = if(trimws(input$cluster_domain) == ""){NULL}else{trimws(input$cluster_domain)},
+          bins = as.numeric(input$cluster_bins),
+          pretty = as.logical(input$cluster_pretty),
+          n = as.numeric(input$cluster_n),
+          levels = if(trimws(input$cluster_levels) == ""){NULL}else{trimws(input$cluster_levels)},
+          ordered = as.logical(input$cluster_ordered),
+          na.color = if(trimws(input$cluster_na_color) == ""){"#FFFFFF"}else{trimws(input$cluster_na_color)},
+          alpha = as.logical(input$cluster_alpha),
+          reverse = as.logical(input$cluster_reverse),
+          right = as.logical(input$cluster_right)
         )
 
 
@@ -163,19 +163,19 @@ disease_cluster_server <- function(input, output, session, transfer) {
       # Plot disease map
       data <- data_c
       stats <- deriv_c$stats
-      color_type <- input$map_color_type
+      color_type <- input$cluster_color_type
       color_param <- base::list(
-        palette = input$map_palette,
-        domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
-        bins = as.numeric(input$map_bins),
-        pretty = as.logical(input$map_pretty),
-        n = as.numeric(input$map_n),
-        levels = if(trimws(input$map_levels) == ""){NULL}else{trimws(input$map_levels)},
-        ordered = as.logical(input$map_ordered),
-        na.color = if(trimws(input$map_na_color) == ""){"#FFFFFF"}else{trimws(input$map_na_color)},
-        alpha = as.logical(input$map_alpha),
-        reverse = as.logical(input$map_reverse),
-        right = as.logical(input$map_right)
+        palette = input$cluster_palette,
+        domain = if(trimws(input$cluster_domain) == ""){NULL}else{trimws(input$cluster_domain)},
+        bins = as.numeric(input$cluster_bins),
+        pretty = as.logical(input$cluster_pretty),
+        n = as.numeric(input$cluster_n),
+        levels = if(trimws(input$cluster_levels) == ""){NULL}else{trimws(input$cluster_levels)},
+        ordered = as.logical(input$cluster_ordered),
+        na.color = if(trimws(input$cluster_na_color) == ""){"#FFFFFF"}else{trimws(input$cluster_na_color)},
+        alpha = as.logical(input$cluster_alpha),
+        reverse = as.logical(input$cluster_reverse),
+        right = as.logical(input$cluster_right)
       )
 
       plot_c <- AegisFunc::get_leaflet_map(
