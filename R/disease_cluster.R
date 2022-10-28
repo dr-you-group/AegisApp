@@ -122,7 +122,7 @@ disease_cluster_server <- function(input, output, session, transfer) {
       for(i in 1:length(years_c)) {
         data <- data_c[years_c[i]][[1]]
         stats <- deriv_c[years_c[i]][[1]]$stats
-        color_type <- "colorQuantile"
+        color_type <- input$map_color_type
         color_param <- base::list(
           palette = input$map_palette,
           domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},

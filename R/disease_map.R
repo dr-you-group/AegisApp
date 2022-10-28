@@ -132,7 +132,7 @@ disease_map_server <- function(input, output, session, transfer) {
       for(i in 1:length(years_m)) {
         data <- data_m[years_m[i]][[1]]
         stats <- deriv_m[years_m[i]][[1]]$stats
-        color_type <- "colorQuantile"
+        color_type <- input$map_color_type
         color_param <- base::list(
           palette = input$map_palette,
           domain = if(trimws(input$map_domain) == ""){NULL}else{trimws(input$map_domain)},
