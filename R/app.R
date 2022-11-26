@@ -12,39 +12,68 @@ AegisApp <- function(...) {
     title = "AegisApp",
     shiny::tabPanel(
       title = "Set database",
-      database_ui
+      databaseUI("db")
     ),
     shiny::tabPanel(
-      title = "Get data for analysis",
-      cohort_ui
+      title = "Get cohort table",
+      cohortUI("chrt")
+    ),
+    shiny::tabPanel(
+      title = "Get geo data",
+      geoUI("geo")
+    ),
+    shiny::tabPanel(
+      title = "Get adjusted table",
+      adjustmentUI("adj")
     ),
     shiny::tabPanel(
       title = "Forecasting",
-      forecasting_ui
+      forecastingUI("fcst")
     ),
     shiny::tabPanel(
       title = "Disease Map",
-      disease_map_ui
+      diseaseMapUI("dzm")
     ),
     shiny::tabPanel(
       title = "Disease Cluster",
-      disease_cluster_ui
+      diseaseClusterUI("dzc")
     )
   )
 
   server <- function(input, output, session) {
-    # # reference: https://github.com/rstudio/shiny/issues/3348#issuecomment-958814151
-    # rendered_js_callback_ui <- function(input_id, input_value = "Date.now().toString()") {
-    #   tags$script(
-    #     glue::glue_safe("Shiny.setInputValue(\"{input_id}\", {input_value})")
-    #   )
-    # }
+    database <- databaseServer("db")
 
-    database <- database_server(input, output, session, NULL)
-    cohort <- cohort_server(input, output, session, database)
-    forecasting_server(input, output, session, cohort)
-    disease_map_server(input, output, session, cohort)
-    disease_cluster_server(input, output, session, cohort)
+    cohort <- cohortServer("chrt", list(
+      cohort_ids = shiny::reactive(database$cohort_ids())
+    ))
+
+    geo <- geoServer("geo", list(
+      model = shiny::reactive(cohort$model()),
+      cohort_table = shiny::reactive(cohort$cohort_table())
+    ))
+
+    adj <- adjustmentServer("adj", list(
+      model = shiny::reactive(cohort$model()),
+      cohort_table = shiny::reactive(cohort$cohort_table()),
+      geo = shiny::reactive(geo$geo())
+    ))
+
+    forecastingServer("fcst", list(
+      model = shiny::reactive(cohort$model()),
+      cohort_table = shiny::reactive(cohort$cohort_table())
+    ))
+
+    diseaseMapServer("dzm", list(
+      model = shiny::reactive(cohort$model()),
+      table = shiny::reactive(adj$table()),
+      geo = shiny::reactive(geo$geo())
+    ))
+
+    diseaseClusterServer("dzc", list(
+      model = shiny::reactive(cohort$model()),
+      table = shiny::reactive(adj$table()),
+      geo = shiny::reactive(geo$geo())
+    ))
   }
 
   shiny::shinyApp(ui, server, ...)
